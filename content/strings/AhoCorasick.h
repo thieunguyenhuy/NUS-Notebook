@@ -1,85 +1,76 @@
 /**
- * Author: Simon Lindholm
- * Date: 2015-02-18
- * License: CC0
- * Source: marian's (TC) code
- * Description: Aho-Corasick automaton, used for multiple pattern matching.
- * Initialize with AhoCorasick ac(patterns); the automaton start node will be at index 0.
- * find(word) returns for each position the index of the longest word that ends there, or -1 if none.
- * findAll($-$, word) finds all words (up to $N \sqrt N$ many if no duplicate patterns)
- * that start at each position (shortest first).
- * Duplicate patterns are allowed; empty patterns are not.
- * To find the longest words that start at each position, reverse all input.
- * For large alphabets, split each symbol into chunks, with sentinel bits for symbol boundaries.
- * Time: construction takes $O(26N)$, where $N =$ sum of length of patterns.
- * find(x) is $O(N)$, where N = length of x. findAll is $O(NM)$.
- * Status: stress-tested
+ * Author: Thieu Nguyen Huy
+ * Description: Aho-corasick.
+ * Usage: Call init() before any operations.
+ * Time: O(len(s)) for addition, O(total_len) for build(), O(len(x)) or O(num of occurences) for query()
+ * Status: Tested on some problems
  */
-#pragma once
 
 struct AhoCorasick {
-	enum {alpha = 26, first = 'A'}; // change this!
-	struct Node {
-		// (nmatches is optional)
-		int back, next[alpha], start = -1, end = -1, nmatches = 0;
-		Node(int v) { memset(next, v, sizeof(next)); }
-	};
-	vector<Node> N;
-	vi backp;
-	void insert(string& s, int j) {
-		assert(!s.empty());
-		int n = 0;
-		for (char c : s) {
-			int& m = N[n].next[c - first];
-			if (m == -1) { n = m = sz(N); N.emplace_back(-1); }
-			else n = m;
-		}
-		if (N[n].end == -1) N[n].start = j;
-		backp.push_back(N[n].end);
-		N[n].end = j;
-		N[n].nmatches++;
-	}
-	AhoCorasick(vector<string>& pat) : N(1, -1) {
-		rep(i,0,sz(pat)) insert(pat[i], i);
-		N[0].back = sz(N);
-		N.emplace_back(0);
+    static const int SIZE = 26;
+    static const char START_CHAR = 'a';
 
-		queue<int> q;
-		for (q.push(0); !q.empty(); q.pop()) {
-			int n = q.front(), prev = N[n].back;
-			rep(i,0,alpha) {
-				int &ed = N[n].next[i], y = N[prev].next[i];
-				if (ed == -1) ed = y;
-				else {
-					N[ed].back = y;
-					(N[ed].end == -1 ? N[ed].end : backp[N[ed].start])
-						= N[y].end;
-					N[ed].nmatches += N[y].nmatches;
-					q.push(ed);
-				}
-			}
-		}
-	}
-	vi find(string word) {
-		int n = 0;
-		vi res; // ll count = 0;
-		for (char c : word) {
-			n = N[n].next[c - first];
-			res.push_back(N[n].end);
-			// count += N[n].nmatches;
-		}
-		return res;
-	}
-	vector<vi> findAll(vector<string>& pat, string word) {
-		vi r = find(word);
-		vector<vi> res(sz(word));
-		rep(i,0,sz(word)) {
-			int ind = r[i];
-			while (ind != -1) {
-				res[i - sz(pat[ind]) + 1].push_back(ind);
-				ind = backp[ind];
-			}
-		}
-		return res;
-	}
-};
+    struct Node {
+        int fail, link;
+        int child[SIZE], nxt[SIZE];
+        int output;
+
+        Node() {
+            fail = 0, link = -1, output = 0;
+            memset(child, -1, sizeof child);
+            memset(nxt, -1, sizeof nxt);
+        }
+    };
+
+    vector<Node> nodes;
+
+    void init() {
+        nodes.clear(), nodes.emplace_back(Node());
+    }
+
+    void add(string &s, int id) {
+        int v = 0;
+        for (char ch : s) {
+            int c = ch - START_CHAR;
+            if (nodes[v].child[c] == -1) {
+                nodes[v].child[c] = nodes.size();
+                nodes.emplace_back(Node());
+            }
+            v = nodes[v].child[c];
+        }
+        ++nodes[v].output;
+    }
+
+    void build() {
+        nodes[0].fail = nodes[0].link = 0;
+        for (int i = 0; i < SIZE; ++i)
+            nodes[0].nxt[i] = (nodes[0].child[i] == -1 ? 0 : nodes[0].child[i]);
+    
+        queue<int> q; q.emplace(0);
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+ 
+            for (int c = 0; c < SIZE; ++c) if (nodes[u].child[c] != -1) {
+                int v = nodes[u].child[c];
+                nodes[v].fail = (u == 0 ? 0 : nodes[nodes[u].fail].nxt[c]);
+                for (int d = 0; d < SIZE; ++d)
+                    nodes[v].nxt[d] = (nodes[v].child[d] == -1 ? nodes[nodes[v].fail].nxt[d] : nodes[v].child[d]);
+                if (nodes[nodes[v].fail].output != 0) nodes[v].link = nodes[v].fail;
+                else nodes[v].link = nodes[nodes[v].fail].link;
+                q.emplace(v);
+            }
+        }
+    }
+
+    int query(string &x) {
+        int ans = 0, p = 0;
+        for (auto ch : x) {
+            int c = ch - START_CHAR, nxt = nodes[p].nxt[c];
+            for (int u = nxt; u != 0; u = nodes[u].link) {
+                ans += nodes[u].output;
+            }
+            p = nxt;
+        }
+        return ans;
+    }
+} aho;

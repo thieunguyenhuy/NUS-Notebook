@@ -5,7 +5,7 @@
 \usepackage[utf8]{inputenc}             % Encoding UTF-8
 \usepackage{listings}                   % Source code listings
 \usepackage{framed}                     % Source code listings
-\usepackage[a4paper,landscape,hmargin={0.5cm,0.5cm},vmargin={1.0cm,0.4cm}]{geometry}
+\usepackage[a4paper,landscape,hmargin={0.5cm,0.5cm},vmargin={2.0cm,2.0cm}]{geometry}
 \usepackage{multicol}                   % Split page in multiple columns
 \usepackage{fancyhdr}                   % Fancy headers
 \usepackage{amsbsy, amssymb, amsmath}   % Enable math symbols
@@ -48,7 +48,7 @@
 }
 
 % Some default config
-\subtitle{{\tiny new}KACTL}
+\subtitle{{\tiny new}Overflower}
 \title{KTH Algorithm Competition Template Library}
 \newcommand{\PDFColor}{0}
 \def\@builddir{build}
@@ -264,6 +264,7 @@
 	\setboolean{hasusage}{false}
 	\setboolean{hastime}{false}
 	\setboolean{hasmemory}{false}
+	\setboolean{hasstatus}{false}
 	\setboolean{hasleftcaption}{false}
 	\myneedspace{3\baselineskip}
 	\penalty-100
@@ -342,6 +343,14 @@
 \defmemory{}
 \setboolean{hasmemory}{false}
 
+\newboolean{hasstatus}
+\newcommand{\defstatus}[1]{
+	\def\@defstatus{#1}
+	\setboolean{hasstatus}{true}
+}
+\defstatus{}
+\setboolean{hasstatus}{false}
+
 
 \newcommand{\codeheader}[2]{
 	{\par\noindent\footnotesize{\textbf{#1:} #2\par}}
@@ -353,6 +362,7 @@
 	\ifthenelse{\boolean{hasusage}}{\codeheader{Usage}{\@defusage}}{}
 	\ifthenelse{\boolean{hasmemory}}{\codeheader{Memory}{\@defmemory}}{}
 	\ifthenelse{\boolean{hastime}}{\codeheader{Time}{\@deftime}}{}
+	\ifthenelse{\boolean{hasstatus}}{\codeheader{Status}{\@defstatus}}{}
 	\ifthenelse{\boolean{hasleftcaption}}{\vspace{0pt}}{\vspace{-5pt}}
 	\tiny
 	\texttt{\@leftcaption} \hfill \@rightcaption

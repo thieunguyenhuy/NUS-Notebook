@@ -5,7 +5,11 @@
  * Status: Well-tested
  */
 
+// Adding decreasing slopes, query min
+// Use get() if query increasing, query() otherwise
 struct ConvexHullTrick {
+    const ll INF = 1e18;
+
     struct Line {
         ll m, b;
 
@@ -36,8 +40,7 @@ struct ConvexHullTrick {
         lines.clear(), pointer = 0;
     }
 
-    void add(ll m, ll b) {
-        // slope decreasing
+    void add(ll m, ll b) { // slope decreasing
         while (!lines.empty() && lines.back().m == m && lines.back().b > b)
             lines.pop_back();
         if (!lines.empty() && lines.back().m == m) return;
@@ -47,8 +50,7 @@ struct ConvexHullTrick {
         lines.emplace_back(newLine);
     }
 
-    ll query(ll x) {
-        // return min
+    ll query(ll x) { // return min
         if (lines.empty()) return INF;
         if (lines.size() == 1) return lines[0].eval(x);
         int low = 0, high = int(lines.size()) - 2, best = -1;
@@ -60,8 +62,7 @@ struct ConvexHullTrick {
         return lines[best + 1].eval(x);
     }
 
-    ll get(ll x) {
-        // query increasing
+    ll get(ll x) { // query increasing
         if (lines.empty()) return INF;
         if (pointer >= lines.size()) pointer = lines.size() - 1;
         while (pointer + 1 < lines.size() && lines[pointer + 1].eval(x) < lines[pointer].eval(x))

@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3,avx2,tune=native")
 #include <bits/stdc++.h>
 #include<cassert>
 using namespace std;

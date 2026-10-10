@@ -13,3 +13,7 @@ typedef vector<int> vi;
 #define ll long long
 #define ull unsigned long long
 #define endl '\n'
+#define MASK(i) (1ULL << (i))
+#define BIT(n, i) (((n) >> (i)) & 1ULL)
+#define CTZ(n) __builtin_ctzll(n)
+#define LOG(n) (63 - __builtin_clzll(n))

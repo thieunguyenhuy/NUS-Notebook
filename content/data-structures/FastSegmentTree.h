@@ -22,7 +22,6 @@ struct SegmentTree {
         for (int i = n; i > 0; --i)
             nodes[i] = nodes[i << 1] + nodes[i << 1 | 1];
     }
-
     void update(int p, int val) {
         //update add
         for (nodes[p += n] += val; p >>= 1;)

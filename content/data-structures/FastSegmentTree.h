@@ -1,6 +1,6 @@
 /**
  * Author: Thieu Nguyen Huy
- * Description: Non-recursion segment tree with point updates and range sum queries.
+ * Description: Non-recursion segment tree with point update (a[i] += x) and range sum queries.
  * Usage: Call mytree.resize(n, a) before any operations.
  * Time: O(\log N) for each operation
  * Status: Well-tested
@@ -23,7 +23,6 @@ struct SegmentTree {
             nodes[i] = nodes[i << 1] + nodes[i << 1 | 1];
     }
     void update(int p, int val) {
-        //update add
         for (nodes[p += n] += val; p >>= 1;)
             nodes[p] = nodes[p << 1] + nodes[p << 1 | 1];
     }

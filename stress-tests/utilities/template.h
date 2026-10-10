@@ -10,4 +10,5 @@ typedef vector<int> vi;
 #define fi first
 #define se second
 #define ll long long
+#define ull unsigned long long
 #define endl '\n'

@@ -17,8 +17,7 @@ struct FastSet {
     static const int LAYER = 3;
     ull a[N + 5];
     int layer_start[LAYER];
-
-    void init() {
+    FastSet(){
         int start = 0, pos = 1;
         for(int i = 0; i < LAYER; ++i) {
             layer_start[i] = start;
@@ -26,7 +25,6 @@ struct FastSet {
             pos = pos * BLOCK;
         }
     }
-
     void update(int x) {
         //add if x not in set and vice versa
         int id = x >> 6, prev = layer_start[LAYER - 1] + id;

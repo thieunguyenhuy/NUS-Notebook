@@ -9,7 +9,6 @@
 // Use get() if query increasing, query() otherwise
 struct ConvexHullTrick {
     const ll INF = 1e18;
-
     struct Line {
         ll m, b;
 
@@ -40,7 +39,7 @@ struct ConvexHullTrick {
         lines.clear(), pointer = 0;
     }
 
-    void add(ll m, ll b) { // slope decreasing
+    void add(ll m, ll b) { // insert line decreasing in slope
         while (!lines.empty() && lines.back().m == m && lines.back().b > b)
             lines.pop_back();
         if (!lines.empty() && lines.back().m == m) return;
@@ -62,7 +61,7 @@ struct ConvexHullTrick {
         return lines[best + 1].eval(x);
     }
 
-    ll get(ll x) { // query increasing
+    ll get(ll x) { //answer query increasing in x
         if (lines.empty()) return INF;
         if (pointer >= lines.size()) pointer = lines.size() - 1;
         while (pointer + 1 < lines.size() && lines[pointer + 1].eval(x) < lines[pointer].eval(x))

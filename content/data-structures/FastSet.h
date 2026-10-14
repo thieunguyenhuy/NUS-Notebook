@@ -1,19 +1,23 @@
 /**
  * Author: Thieu Nguyen Huy
- * Description: Fast set
+ * Description: Fast set for sets that only have integers in [1, N]
  * Time: O(log64(n)) for update and lowerbound, upperbound
  * Status: Well-tested
+ * Usage: call init() first
+ * Memory: O(N)
+ * Status: Well-tested
  */
-
-namespace FastSet {
-    const int N = 250000 + 5;
-    const int BLOCK = 64;
-    const int LAYER = 3;
-
+struct FastSet {
+    #define MASK(i) (1ULL << (i))
+    #define BIT(n, i) (((n) >> (i)) & 1ULL)
+    #define CTZ(n) __builtin_ctzll(n)
+    #define LOG(n) (63 - __builtin_clzll(n))
+    static const int N = 250000 + 5;
+    static const int BLOCK = 64;
+    static const int LAYER = 3;
     ull a[N + 5];
     int layer_start[LAYER];
-
-    void init() {
+    FastSet(){
         int start = 0, pos = 1;
         for(int i = 0; i < LAYER; ++i) {
             layer_start[i] = start;
@@ -21,8 +25,8 @@ namespace FastSet {
             pos = pos * BLOCK;
         }
     }
-
     void update(int x) {
+        //add if x not in set and vice versa
         int id = x >> 6, prev = layer_start[LAYER - 1] + id;
         a[prev] ^= MASK(x & (BLOCK - 1));
         for (int i = LAYER - 2; i >= 0; --i) {
@@ -39,7 +43,7 @@ namespace FastSet {
         return CTZ(mask);
     }
 
-    int find_next(int x) { // return >= x
+    int find_next(int x) { // return first ele >= x or -1 if no ele
         int id = x >> 6;
         int foo = get_next(a[id + layer_start[LAYER - 1]], x & (BLOCK - 1));
         if (foo != -1) return x - (x & (BLOCK - 1)) + foo;
@@ -67,7 +71,7 @@ namespace FastSet {
         return LOG(mask);
     }
 
-    int find_prev(int x) { // return < x
+    int find_prev(int x) { // return last ele < x or -1 if no ele
         int id = x >> 6;
         int foo = get_prev(a[id + layer_start[LAYER - 1]], x & (BLOCK - 1));
         if (foo != -1) return x - (x & (BLOCK - 1)) + foo;
@@ -96,4 +100,4 @@ namespace FastSet {
     int get_max() {
         return find_prev(N + 1);
     }
-}
+};

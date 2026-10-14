@@ -1,34 +1,38 @@
 /**
- * Author: Lukas Polacek
- * Date: 2009-10-30
- * License: CC0
- * Source: folklore/TopCoder
- * Description: Computes partial sums a[0] + a[1] + ... + a[pos - 1], and point update (a[i] += x),
- * taking the difference between the old and new value.
- * Time: Both operations are $O(\log N)$.
- * Status: Stress-tested
+ * Author: Le Pham Duy Khoa
+ * Description: Computes prefix sums a[1] + ... + a[i], and point update (a[i] += x),
+ * Time: $O(\log n)$.
+ * Status: Tested
  */
-#pragma once
-
-struct FT {
-	vector<ll> s;
-	FT(int n) : s(n) {}
-	void update(int pos, ll dif) { // a[pos] += dif
-		for (; pos < sz(s); pos |= pos + 1) s[pos] += dif;
-	}
-	ll query(int pos) { // sum of values in [0, pos)
-		ll res = 0;
-		for (; pos > 0; pos &= pos - 1) res += s[pos-1];
-		return res;
-	}
-	int lower_bound(ll sum) {// min pos st sum of [0, pos] >= sum
-		// Returns n if no sum is >= sum, or -1 if empty sum is.
-		if (sum <= 0) return -1;
-		int pos = 0;
-		for (int pw = 1 << 25; pw; pw >>= 1) {
-			if (pos + pw <= sz(s) && s[pos + pw-1] < sum)
-				pos += pw, sum -= s[pos-1];
-		}
-		return pos;
-	}
+struct fenwick{
+    vector<ll> bit;
+    int n;
+    fenwick(int n) : bit(n + 1), n(n) {};
+    void update(int i, ll x){
+        for(; i < bit.size(); i += (i&(-i))){
+            bit[i] += x;
+        }
+    }
+    ll query(int i){
+        ll curr=0;
+        for(;i; i -= (i & (-i))){
+            curr += bit[i];
+        }
+        return curr;
+    }
+    ll range(int l, int r){
+        return (query(r) - query(l - 1));
+    }
+    //find first position such that sum >= x (non-empty)
+    int lower_bound(int x){
+        int pos = 0;
+        ll sum = 0;
+        for(int i = __lg(n); i>=0; i--){
+            if(pos + (1 << i) < bit.size() && bit[pos + (1 << i)] + sum < x){
+                sum += bit[pos + (1 << i)];
+                pos += (1 << i);
+            }
+        }
+        return pos + 1;
+    }
 };

@@ -8,10 +8,6 @@
  * Status: Well-tested
  */
 struct FastSet {
-    #define MASK(i) (1ULL << (i))
-    #define BIT(n, i) (((n) >> (i)) & 1ULL)
-    #define CTZ(n) __builtin_ctzll(n)
-    #define LOG(n) (63 - __builtin_clzll(n))
     static const int N = 250000 + 5;
     static const int BLOCK = 64;
     static const int LAYER = 3;

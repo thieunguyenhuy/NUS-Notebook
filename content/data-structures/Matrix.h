@@ -1,40 +1,79 @@
 /**
- * Author: Ulf Lundstrom
- * Date: 2009-08-03
- * License: CC0
- * Source: My head
- * Description: Basic operations on square matrices.
- * Usage: Matrix<int, 3> A;
- *  A.d = {{{{1,2,3}}, {{4,5,6}}, {{7,8,9}}}};
- *  array<int, 3> vec = {1,2,3};
- *  vec = (A^N) * vec;
- * Status: tested
+ * Author: Thieu Nguyen Huy
+ * Description: Matrix multiplication
+ * Status: ~370ms on yosupo
  */
-#pragma once
 
-template<class T, int N> struct Matrix {
-	typedef Matrix M;
-	array<array<T, N>, N> d{};
-	M operator*(const M& m) const {
-		M a;
-		rep(i,0,N) rep(j,0,N)
-			rep(k,0,N) a.d[i][j] += d[i][k]*m.d[k][j];
-		return a;
-	}
-	array<T, N> operator*(const array<T, N>& vec) const {
-		array<T, N> ret{};
-		rep(i,0,N) rep(j,0,N) ret[i] += d[i][j] * vec[j];
-		return ret;
-	}
-	M operator^(ll p) const {
-		assert(p >= 0);
-		M a, b(*this);
-		rep(i,0,N) a.d[i][i] = 1;
-		while (p) {
-			if (p&1) a = a*b;
-			b = b*b;
-			p >>= 1;
-		}
-		return a;
-	}
+struct Matrix {
+    static const ull modmod = 8LL * MOD * MOD; // should be < 2^63
+
+    vector<vector<ull>> val;
+    int n, m;
+
+    Matrix(int _n = 0, int _m = 0) {
+        resize(_n, _m);
+    }
+
+    Matrix(vector<vector<ll>> ve) {
+        init(ve);
+    }
+
+    void resize(int _n, int _m) {
+        n = _n, m = _m;
+        val.assign(n, vector<ull>(m));
+    }
+
+    void init(vector<vector<ll>> ve) {
+        n = ve.size(), m = ve[0].size();
+        val.assign(n, vector<ull>(m, 0));
+        for (int i = 0; i < n; ++i) for (int j = 0; j < m; ++j) {
+            val[i][j] = ve[i][j];
+        }
+    }
+
+    friend istream& operator >> (istream &is, Matrix &T) {
+        for (auto &x : T.val) {
+            for (auto &y : x) is >> y;
+        }
+        return is;
+    }
+
+    friend ostream& operator << (ostream &os, Matrix T) {
+        for (auto &x : T.val) {
+            for (auto &y : x) os << (int)(y % MOD) << ' ';
+            os << '\n';
+        }
+        return os << '\n';
+    }
+
+    vector<ull>& operator [] (int i) { return val[i]; }
+    const vector<ull>& operator [] (int i) const { return val[i]; }
+
+    Matrix operator * (const Matrix &other) {
+        assert(m == other.n);
+        Matrix ret(n, other.m);
+        for (int i = 0; i < n; ++i) {
+            for (int k = 0; k < m; ++k) {
+               for (int j = 0; j < other.m; ++j) {
+                    ret[i][j] += val[i][k] * other[k][j];
+                }
+                if (k % 8 == 0) {
+                    for (int j = 0; j < other.m; ++j) {
+                        ret[i][j] = min(ret[i][j], ret[i][j] - modmod);
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+    Matrix binpow(ll n) {
+        Matrix A = *this, ret(A.n, A.n);
+        for (int i = 0; i < A.n; ++i) ret[i][i] = 1;
+        while (n > 0) {
+            if (n & 1) ret = ret * A;
+            A = A * A, n >>= 1;
+        }
+        return ret;
+    }
 };

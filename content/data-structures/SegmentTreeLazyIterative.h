@@ -6,8 +6,17 @@
  * Time: O(\log N) for each operation
  * Status: Tested on range add update and range min query.
  */
-template<class T,class U, 
-auto TT, auto UT, auto UU> struct segtree{
+template<class T,class U> struct segtree{
+    T TT(T &le, T &ri){
+        //fill merge node + node here
+    }
+    void UT(U &app, T &node){
+        //fill apply lazy "app" variable to "node" variable here
+    }
+    void UU(U &app, U &node){
+        //fill merge lazy + lazy here 
+        //(and assign it to variable "app")
+    }
     //Tid, Uid are default values of T, U, 
     //representing empty node and empty lazy (no change). 
     T Tid;
@@ -31,8 +40,8 @@ auto TT, auto UT, auto UU> struct segtree{
         for(int i = n - 1; i >= 1; i--) refresh(i);
     }
     void apply(int v, U &f){
-        seg[v] = UT(f, seg[v]);
-        if(v < n) d[v] = UU(f, d[v]);
+        UT(f, seg[v]);
+        if(v < n) UU(f, d[v]);
     }
     void push(int v){
         apply(v << 1, d[v]), apply((v << 1) | 1, d[v]);

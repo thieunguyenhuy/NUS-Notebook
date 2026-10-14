@@ -1,12 +1,13 @@
 /**
  * Author: KickingKun
- * Description: LichaoTree -> use for DP convex hull trick
+ * Description: Li Chao Tree, can query min and add line.
  * Time: Both operations are O(\log N)
  * Status: Tested by KickingKun
 */
 
 struct LiChaoTree {
-    static const ll lim = 1e9;
+    //range for x is in [-lim, lim].
+    static const ll lim = 1e9, INF = 1e18;
     struct Line {
         ll a, b;
         ll operator() (ll x) {
@@ -29,8 +30,8 @@ struct LiChaoTree {
         if (i == NULL || x < l || x > r) return INF;
         ll m = (l + r) >> 1;
         ll ans = i->line(x);
-        minimize(ans, query(i->l, l, m, x));
-        minimize(ans, query(i->r, m + 1, r, x));
+        ans = min(ans, query(i->l, l, m, x));
+        ans = min(ans, query(i->r, m + 1, r, x));
         return ans;
     }
 

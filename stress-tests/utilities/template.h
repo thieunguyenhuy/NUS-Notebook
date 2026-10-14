@@ -6,12 +6,11 @@ using namespace std;
 #define all(x) x.begin(), x.end()
 #define sz(x) (int)(x).size()
 typedef long long ll;
+typedef unsigned long long ull;
 typedef pair<int, int> pii;
 typedef vector<int> vi;
 #define fi first
 #define se second
-#define ll long long
-#define ull unsigned long long
 #define endl '\n'
 #define MASK(i) (1ULL << (i))
 #define BIT(n, i) (((n) >> (i)) & 1ULL)

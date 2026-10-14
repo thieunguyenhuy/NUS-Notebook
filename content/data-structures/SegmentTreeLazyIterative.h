@@ -38,7 +38,7 @@ auto TT, auto UT, auto UU> struct segtree{
         apply(v << 1, d[v]), apply((v << 1) | 1, d[v]);
         d[v] = Uid;
     }
-    void update(int l, int r, U &f){
+    void update(int l, int r, U &f){ //update in [l, r]
         l += n, r += (n + 1);
         if(l >= r) return;
         for(int i = lg; i >= 1; i--){
@@ -62,7 +62,7 @@ auto TT, auto UT, auto UU> struct segtree{
             if((r >> i << i) != r) refresh(r >> i);
         }
     }
-    T query(int l, int r){
+    T query(int l, int r){ // query in [l, r]
         l += n, r += (n + 1);
         if(l >= r) return Tid;
         for(int i = lg; i >= 1; i--){

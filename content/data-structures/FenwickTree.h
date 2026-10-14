@@ -1,6 +1,7 @@
 /**
  * Author: Le Pham Duy Khoa
- * Description: Computes prefix sums a[1] + ... + a[i], and point update (a[i] += x),
+ * Description: Computes prefix sums a[1] + ... + a[i], point update (a[i] += x) 
+ * and finding lower bound for prefix sums
  * Time: $O(\log n)$.
  * Status: Tested
  */

@@ -6,7 +6,7 @@
  * After that, fill in add, remove, calc, then call mo_inter(), mo_tree().
  * Note that the array/tree is 0-index.
  * Time: O(N \sqrt Q)
- * Status: tested on one tree problem and one interval problem.
+ * Status: Tested on one tree problem and one interval problem.
  */
 namespace MoAlgo{
     using T_ans = ll;

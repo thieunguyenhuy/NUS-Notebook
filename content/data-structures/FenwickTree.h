@@ -3,7 +3,7 @@
  * Description: Computes prefix sums a[1] + ... + a[i], point update (a[i] += x) 
  * and finding lower bound for prefix sums
  * Time: $O(\log n)$.
- * Status: Tested
+ * Status: Tested on one problem.
  */
 struct fenwick{
     vector<ll> bit;

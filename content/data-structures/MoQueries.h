@@ -1,74 +1,100 @@
 /**
- * Author: Simon Lindholm
- * Date: 2019-12-28
- * License: CC0
- * Source: https://github.com/hoke-t/tamu-kactl/blob/master/content/data-structures/MoQueries.h
- * Description: Answer interval or tree path queries by finding an approximate TSP through the queries,
- * and moving from one query to the next by adding/removing points at the ends.
- * If values are on tree edges, change \texttt{step} to add/remove the edge $(a, c)$ and remove the initial \texttt{add} call (but keep \texttt{in}).
+ * Author: Le Pham Duy Khoa
+ * Description: Using Mo's Algorithm to answer tree path (vertex) or interval queries, 
+ * adding/removing one element each step.
+ * Usage: change block size and Type of ans in t_ans and blsz.
+ * After that, fill in add, remove, calc, then call mo_inter(), mo_tree().
+ * Note that the array/tree is 0-index.
  * Time: O(N \sqrt Q)
- * Status: stress-tested
+ * Status: tested on one tree problem and one interval problem.
  */
-#pragma once
+namespace MoAlgo{
+    using T_ans = ll;
+    const int blsz = 350; // block size
+    //(inter[0], inter[1]) is the current interval/path BEFORE OPERATION
+    void add(int idx, array<int, 2> &inter){} // add idx
+    void remove(int idx, array<int, 2> &inter){} // remove idx
+    T_ans calc(array<int, 2> &inter) {return ans;} 
+    // compute current answer
 
-void add(int ind, int end) { ... } // add a[ind] (end = 0 or 1)
-void del(int ind, int end) { ... } // remove a[ind]
-int calc() { ... } // compute current answer
-
-ull hilbert(ull x, ull y) {
-	const ull logn = __lg(max(x, y) * 2 + 1) | 1;
-	const ull maxn = (1ull << logn) - 1;
-	ull res = 0;
-	for (ull s = 1ull << (logn - 1); s; s >>= 1) {
-		bool rx = x & s, ry = y & s;
-		res = (res << 2) | (rx ? ry ? 2 : 1 : ry ? 3 : 0);
-		if (!rx) { if (ry) x ^= maxn, y ^= maxn; swap(x, y); }
-	}
-	return res;
-}
-
-vi mo(vector<pii> Q) {
-	int L = 0, R = 0, blk = 350; // ~N/sqrt(Q)
-	vi s(sz(Q)), res = s;
-#define K(x) hilbert(x.first, x.second)
-	iota(all(s), 0);
-	sort(all(s), [&](int s, int t){ return K(Q[s]) < K(Q[t]); });
-	for (int qi : s) {
-		pii q = Q[qi];
-		while (L > q.first) add(--L, 0);
-		while (R < q.second) add(R++, 1);
-		while (L < q.first) del(L++, 0);
-		while (R > q.second) del(--R, 1);
-		res[qi] = calc();
-	}
-	return res;
-}
-
-vi moTree(vector<array<int, 2>> Q, vector<vi>& ed, int root=0){
-	int N = sz(ed), pos[2] = {}, blk = 350; // ~N/sqrt(Q)
-	vi s(sz(Q)), res = s, I(N), L(N), R(N), in(N), par(N);
-	add(0, 0), in[0] = 1;
-	auto dfs = [&](int x, int p, int dep, auto& f) -> void {
-		par[x] = p;
-		L[x] = N;
-		if (dep) I[x] = N++;
-		for (int y : ed[x]) if (y != p) f(y, x, !dep, f);
-		if (!dep) I[x] = N++;
-		R[x] = N;
-	};
-	dfs(root, -1, 0, dfs);
-#define K(x) pii(I[x[0]] / blk, I[x[1]] ^ -(I[x[0]] / blk & 1))
-	iota(all(s), 0);
-	sort(all(s), [&](int s, int t){ return K(Q[s]) < K(Q[t]); });
-	for (int qi : s) rep(end,0,2) {
-		int &a = pos[end], b = Q[qi][end], i = 0;
-#define step(c) { if (in[c]) { del(a, end); in[a] = 0; } \
-                  else { add(c, end); in[c] = 1; } a = c; }
-		while (!(L[b] <= L[a] && R[a] <= R[b]))
-			I[i++] = b, b = par[b];
-		while (a != b) step(par[a]);
-		while (i--) step(I[i]);
-		if (end) res[qi] = calc();
-	}
-	return res;
+    pii get_block(pii que){
+        if((que. fi / blsz) & 1) que.se = -que.se;
+        return {que.fi / blsz, que.se};   
+    }
+    vector<T_ans> mo_inter(vector<pii> que){
+        array<int, 2> inter = {0, 0};
+        add(0, inter);
+        int &L = inter[0], &R = inter[1]; 
+        vi order(sz(que));
+        vector<ll> ans(sz(que));
+        iota(all(order), 0);
+        auto cmp = [&](int s, int t){ 
+            return get_block(que[s]) < get_block(que[t]); 
+        };
+        sort(all(order), cmp);
+        for (int qi : order){
+            pii q = que[qi];
+            while(L > q.fi){
+                add(L - 1, inter); L--;
+            }
+            while(R < q.se){
+                add(R + 1, inter); R++;
+            }
+            while(L < q.fi){
+                remove(L, inter); L++;
+            }
+            while(R > q.se){
+                remove(R, inter); R--;
+            }
+            ans[qi] = calc(inter);
+        }
+        return ans;
+    }
+    vector<T_ans> mo_tree(vector<pii> que, vector<vi>& graph, int root=0){
+        int n = sz(graph);
+        array<int, 2> path = {root, root};
+        vi order(sz(que)), in(n), out(n), on_path(n), pa(n);
+        vector<T_ans> ans(sz(que));
+        int tim = 0;
+        add(root, path), on_path[root] = 1;
+        auto dfs = [&](int u, int p, auto& self) -> void {
+            pa[u] = p;
+            in[u] = tim; tim++;
+            for (int v : graph[u]) if (v != p) self(v, u, self);
+            out[u] = tim; tim++;
+        };
+        dfs(root, -1, dfs);
+        iota(all(order), 0);
+        auto cmp = [&](int s, int t){ 
+            pii ps = {in[que[s].fi], in[que[s].se]};
+            pii pt = {in[que[t].fi], in[que[t].se]};
+            return get_block(ps) < get_block(pt); 
+        };
+        sort(all(order), cmp);
+        for(int qi: order){
+            vi tmp;
+            tmp.reserve(n);
+            auto move_end = [&](int &a, int b){
+                auto step = [&](int c){
+                    if (on_path[c]){
+                        remove(a, path); on_path[a] = 0;
+                    }
+                    else{
+                        add(c, path); on_path[c] = 1;
+                    }
+                    a = c;
+                };
+                for(;!(in[b] <= in[a] && in[a] <= out[b]); b = pa[b]){
+                    tmp.push_back(b);
+                }
+                while (a != b) step(pa[a]);
+                for(int i = (int)tmp.size() - 1; i >= 0; i--) step(tmp[i]);
+                tmp.clear(),tmp.resize(0);
+            };
+            move_end(path[0], que[qi].fi);
+            move_end(path[1], que[qi].se);
+            ans[qi] = calc(path);
+        }
+        return ans;
+    }
 }

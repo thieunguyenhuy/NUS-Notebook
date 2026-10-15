@@ -7,16 +7,15 @@
  * Status: Tested on range add update and range min query.
  */
 template<class T,class U> struct segtree{
-    T TT(T &le, T &ri){
-        //fill merge node + node here
-    }
-    void UT(U &app, T &node){
-        //fill apply lazy "app" variable to "node" variable here
-    }
-    void UU(U &app, U &node){
-        //fill merge lazy + lazy here 
-        //(and assign it to variable "app")
-    }
+    //fill merge node + node here
+    T TT(T &le, T &ri){} 
+    
+    //fill apply lazy "app" variable to "node" variable here
+    void UT(U &app, T &node){}
+    
+    //fill merge lazy + lazy here and assign it to variable "app"
+    void UU(U &app, U &node){}
+
     //Tid, Uid are default values of T, U, 
     //representing empty node and empty lazy (no change). 
     T Tid;

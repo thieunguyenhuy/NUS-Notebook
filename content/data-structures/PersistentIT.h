@@ -1,39 +1,35 @@
 /**
  * Author: Thieu Nguyen Huy
- * Description: Persistent segment tree with point updates and range sum queries.
+ * Description: Persistent segment tree with point add updates and range sum queries.
  * Usage: Remember to call mytree.resize(n) before any operations.
  *  Make sure to check for integer overflows in update values.
  * Time: O(\log N) for each operation
  * Memory: O(\log N \cdot numUpdates) 
  * Status: Tested on CSES
  */
-
+//change the parameters
+const int MAX = 1e7;
 struct Node {
     int le, ri;
     ll sum;
- 
     Node(int _le = 0, int _ri = 0, ll _sum = 0) {
         le = _le, ri = _ri, sum = _sum;
     }
-} nodes[N * LG];
-int numNode = 0;
-vector<int> version;
-
+} nodes[MAX];
 struct PersistentIT { // 1-indexed
     int n;
-
     PersistentIT(int _n = 0) {
         resize(_n);
     }
-
+    
     void resize(int _n) {
         n = _n;
     }
-
+    int numNode = 0;
     int update(int oldId, int l, int r, int p, int val) {
         if (l > p || r < p) return oldId;
  
-        int id = ++numNode;
+        numNode++; int id = numNode;
         if (l == r) {
             nodes[id] = nodes[oldId];
             nodes[id].sum += val;

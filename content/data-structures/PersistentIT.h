@@ -2,21 +2,21 @@
  * Author: Thieu Nguyen Huy
  * Description: Persistent segment tree with point add updates and range sum queries.
  * Usage: Remember to call mytree.resize(n) before any operations.
- *  Make sure to check for integer overflows in update values.
+ * Make sure to check for integer overflows in update values.
  * Time: O(\log N) for each operation
  * Memory: O(\log N \cdot numUpdates) 
  * Status: Tested on CSES
  */
 //change the parameters
-const int MAX = 1e7;
+const int MAX_UPDATES = 1e7+10;
 struct Node {
     int le, ri;
     ll sum;
     Node(int _le = 0, int _ri = 0, ll _sum = 0) {
         le = _le, ri = _ri, sum = _sum;
     }
-} nodes[MAX];
-struct PersistentIT { // 1-indexed
+} nodes[MAX_UPDATES];
+struct PersistentIT { // 1-indexed array
     int n;
     PersistentIT(int _n = 0) {
         resize(_n);

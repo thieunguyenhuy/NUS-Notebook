@@ -1,65 +1,66 @@
 /**
- * Author: someone on Codeforces
- * Date: 2017-03-14
- * Source: folklore
- * Description: A short self-balancing tree. It acts as a
- *  sequential container with log-time splits/joins, and
- *  is easy to augment with additional data.
+ * Author: Le Pham Duy Khoa
+ * Description: An explicit treap that supports split(), merge(),
+ * insert(), and erase().
+ * Usage: Declare pnode t = nullptr for an empty treap,
+ * then use the functions. If you want to handle more data in each node,
+ * then reimplement get_val() and refresh().
  * Time: $O(\log N)$
- * Status: stress-tested
+ * Status: Tested on two problems
  */
-#pragma once
-
-struct Node {
-	Node *l = 0, *r = 0;
-	int val, y, c = 1;
-	Node(int val) : val(val), y(rand()) {}
-	void recalc();
+mt19937_64 rng(6736);
+struct node{
+    int x, sz = 1;
+    ull y;
+    node *le = nullptr, *ri = nullptr;
+    node(int x): x(x), y(rng()) {}
+    node(int x, int y): x(x), y(y) {}
 };
-
-int cnt(Node* n) { return n ? n->c : 0; }
-void Node::recalc() { c = cnt(l) + cnt(r) + 1; }
-
-template<class F> void each(Node* n, F f) {
-	if (n) { each(n->l, f); f(n->val); each(n->r, f); }
-}
-
-pair<Node*, Node*> split(Node* n, int k) {
-	if (!n) return {};
-	if (cnt(n->l) >= k) { // "n->val >= k" for lower_bound(k)
-		auto [L,R] = split(n->l, k);
-		n->l = R;
-		n->recalc();
-		return {L, n};
-	} else {
-		auto [L,R] = split(n->r,k - cnt(n->l) - 1); // and just "k"
-		n->r = L;
-		n->recalc();
-		return {n, R};
-	}
-}
-
-Node* merge(Node* l, Node* r) {
-	if (!l) return r;
-	if (!r) return l;
-	if (l->y > r->y) {
-		l->r = merge(l->r, r);
-		return l->recalc(), l;
-	} else {
-		r->l = merge(l, r->l);
-		return r->recalc(), r;
-	}
-}
-
-Node* ins(Node* t, Node* n, int pos) {
-	auto [l,r] = split(t, pos);
-	return merge(merge(l, n), r);
-}
-
-// Example application: move the range [l, r) to index k
-void move(Node*& t, int l, int r, int k) {
-	Node *a, *b, *c;
-	tie(a,b) = split(t, l); tie(b,c) = split(b, r - l);
-	if (k <= l) t = merge(ins(a, b, k), c);
-	else t = merge(a, ins(c, b, k - r));
+namespace treap{
+    using pnode = node*;
+    int get_val(pnode &p){
+        if(p == nullptr) return 0;
+        return p->sz;
+    }
+    void refresh(pnode &p){
+        p->sz = get_val(p->le) + get_val(p->ri) + 1;
+    }
+    //first is <=x, second is >x
+    pair<pnode, pnode> split(pnode t, int x){
+        if(t == nullptr) return {nullptr, nullptr};
+        pair<pnode, pnode> ans;
+        if(t->x <= x){
+            ans = split(t->ri, x);
+            t->ri = ans.fi; ans.fi = t;
+            refresh(ans.fi);
+        }
+        else{
+            ans = split(t->le, x);
+            t->le = ans.se; ans.se = t;
+            refresh(ans.se);
+        }
+        return ans;
+    }
+    //assume all t1->x < t2->x (ordering between trees)
+    pnode merge(pnode t1, pnode t2){
+        if(t1 == nullptr) return t2;
+        if(t2 == nullptr) return t1;
+        if(t1->y >= t2->y){
+            t1->ri = merge(t1->ri, t2); 
+            refresh(t1); return t1;
+        }
+        t2->le = merge(t1, t2->le); 
+        refresh(t2); return t2;
+    }
+    void insert(pnode &t, int x){
+        pnode p = new node(x);
+        auto [t1, t2] = split(t, x);
+        t = merge(merge(t1, p), t2);
+    }
+    //erase ALL occurences of x
+    void erase(pnode &t, int x){
+        auto [t1, mid] = split(t, x - 1);
+        auto [tx, t2] = split(mid, x);
+        t = merge(t1, t2);
+    }
 }

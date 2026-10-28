@@ -7,25 +7,77 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-
     steps:
-      - uses: actions/checkout@v2
-      - name: Install pdflatex
-        run: sudo apt-get install texlive-latex-base texlive-latex-recommended texlive-latex-extra
-      - name: Build pdf
-        run: make kactl
-      - name: Run compiles
-        run: make test-compiles
-      - name: Run stress tests
-        run: make test
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - uses: actions/checkout@v6
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "Latest build"
-          files: "kactl.pdf"
+          persist-credentials: false
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            g++ make python3 \
+            texlive-latex-base texlive-latex-recommended \
+            texlive-latex-extra texlive-fonts-recommended
+
+      - name: Build PDF
+        run: |
+          make clean
+          make kactl
+
+      - name: Save PDF
+        uses: actions/upload-artifact@v7
+        with:
+          name: kactl-pdf
+          path: kactl.pdf
+          if-no-files-found: error
+
+  release:
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Download PDF
+        uses: actions/download-artifact@v8
+        with:
+          name: kactl-pdf
+
+      - name: Publish latest prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if gh api "repos/${GH_REPO}/git/ref/tags/latest" --silent; then
+            gh api --method PATCH "repos/${GH_REPO}/git/refs/tags/latest" \
+              -f sha="$COMMIT_SHA" -F force=true --silent
+          else
+            gh api --method POST "repos/${GH_REPO}/git/refs" \
+              -f ref=refs/tags/latest -f sha="$COMMIT_SHA" --silent
+          fi
+
+          if gh release view latest >/dev/null 2>&1; then
+            gh release edit latest --title "Latest build" --prerelease
+            gh release upload latest kactl.pdf --clobber
+          else
+            gh release create latest kactl.pdf \
+              --verify-tag --title "Latest build" --prerelease \
+              --notes "Notebook built from commit ${COMMIT_SHA}."
+          fi

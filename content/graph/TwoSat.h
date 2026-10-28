@@ -41,8 +41,8 @@ struct TwoSat { // convert vector -> array to get higher speed ....
 		low[u] = num[u] = ++timeDfs; st.emplace(u);
 		for (int v: adj[u]) {
 			if (lab[v]) continue;
-			if (!num[v]) dfs(v), minimize(low[u], low[v]);
-			else minimize(low[u], num[v]);
+			if (!num[v]) dfs(v), low[u] = min(low[u], low[v]);
+			else low[u] = min(low[u], num[v]);
 		}
 		
 		if (low[u] == num[u]) {

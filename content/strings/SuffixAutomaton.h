@@ -30,7 +30,7 @@ struct SuffixAutomaton{
         g.emplace_back(g[p].len+1, g[q].link, g[q].nxt);
         ptrans(p, c, qc); return g[q].link = qc;
     }
-    int addc(int p, char c) { // Progress iterator
+    int addc(int p, char c) { // Progress iterator; c is in [0, 26).
         if (g[p].nxt[c] != -1) return fbuild(p, c);
         int nc = g.size();
         g.emplace_back(g[p].len+1);

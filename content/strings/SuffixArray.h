@@ -15,13 +15,13 @@ struct SuffixArray {
         str = _str, n = str.size();
         sa.assign(n, 0), lcp.assign(n, 0), order.assign(n, 0);
         rank.assign(n, 0), weight.assign(n, 0);
-        get(), getLCP();
+        getSA(), getLCP();
     }
  
     void getSA() {
         for (int i = 0; i < n; ++i) {
             sa[i] = i;
-            weight[i] = int(str[i]);
+            weight[i] = (unsigned char)str[i];
         }
  
         auto cmp = [&](int x, int y) {
@@ -53,7 +53,7 @@ struct SuffixArray {
             if (rank[i] > 0) {
                 int j = sa[rank[i] - 1];
                 if (k > 0) --k;
-                while (str[i + k] == str[j + k]) ++k;
+                while (i + k < n && j + k < n && str[i + k] == str[j + k]) ++k;
             }
             else k = 0;
         }

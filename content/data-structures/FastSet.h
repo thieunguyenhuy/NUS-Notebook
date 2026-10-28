@@ -11,7 +11,7 @@ struct FastSet {
     static const int N = 250000 + 5;
     static const int BLOCK = 64;
     static const int LAYER = 3;
-    ull a[N + 5];
+    uint64_t a[N + 5]{};
     int layer_start[LAYER];
     FastSet(){
         int start = 0, pos = 1;
@@ -21,22 +21,25 @@ struct FastSet {
             pos = pos * BLOCK;
         }
     }
+    void init() { fill(a, a + N + 5, 0); }
+
     void update(int x) {
+        assert(1 <= x && x <= N);
         //add if x not in set and vice versa
         int id = x >> 6, prev = layer_start[LAYER - 1] + id;
-        a[prev] ^= MASK(x & (BLOCK - 1));
+        a[prev] ^= (1ULL << (x & (BLOCK - 1)));
         for (int i = LAYER - 2; i >= 0; --i) {
             x >>= 6, id >>= 6;
             int digit = x & (BLOCK - 1), cur = id + layer_start[i];
-            if ((a[prev] > 0) != BIT(a[cur], digit)) a[cur] ^= MASK(digit);
+            if ((a[prev] > 0) != ((a[cur] >> digit) & 1ULL)) a[cur] ^= (1ULL << digit);
             prev = cur;
         }
     }
 
-    int get_next(ull mask, int l) {
-        ull foo = -1; mask &= foo << l;
-        if (l == BLOCK || mask == 0) return -1;
-        return CTZ(mask);
+    int get_next(uint64_t mask, int l) {
+        if (l >= BLOCK) return -1;
+        mask &= ~uint64_t(0) << l;
+        return mask ? __builtin_ctzll(mask) : -1;
     }
 
     int find_next(int x) { // return first ele >= x or -1 if no ele
@@ -51,7 +54,7 @@ struct FastSet {
             if (foo != -1) {
                 id = (id << 6) + foo;
                 for (int j = i + 1; j < LAYER; ++j) {
-                    int digit = CTZ(a[id + layer_start[j]]);
+                    int digit = __builtin_ctzll(a[id + layer_start[j]]);
                     id = (id << 6) + digit;
                 }
                 return id;
@@ -61,10 +64,9 @@ struct FastSet {
         return -1;
     }
 
-    int get_prev(ull mask, int l) {
-        mask &= MASK(l) - 1;
-        if (l == BLOCK || mask == 0) return -1;
-        return LOG(mask);
+    int get_prev(uint64_t mask, int l) {
+        if (l < BLOCK) mask &= (1ULL << l) - 1;
+        return mask ? 63 - __builtin_clzll(mask) : -1;
     }
 
     int find_prev(int x) { // return last ele < x or -1 if no ele
@@ -79,7 +81,7 @@ struct FastSet {
             if (foo != -1) {
                 id = (id << 6) + foo;
                 for(int j = i + 1; j < LAYER; ++j) {
-                    int digit = LOG(a[id + layer_start[j]]);
+                    int digit = (63 - __builtin_clzll(a[id + layer_start[j]]));
                     id = (id << 6) + digit;
                 }
                 return id;

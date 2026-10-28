@@ -50,6 +50,7 @@ struct Dinic {
     }
  
     ll maxFlow(int source, int sink) {
+        assert(source != sink);
         ll flow = 0;
         do {
             level = ptr = vector<int>(n + 1, 0);
@@ -67,10 +68,13 @@ struct Dinic {
         return flow;
     }
  
-    vii minCut() { // remember to call maxFlow(source, sink) and be careful of duplicates
-        vii cut;
-        for (auto it : edges)
-            if (level[it.u] && !level[it.v]) cut.emplace_back(it.u, it.v);
+    vector<pii> minCut() { // remember to call maxFlow(source, sink) and be careful of duplicates
+        vector<pii> cut;
+        for (int id = 0; id < m; id += 2) {
+            auto &e = edges[id];
+            if (e.capacity > 0 && level[e.u] && !level[e.v])
+                cut.emplace_back(e.u, e.v);
+        }
         return cut;
     }
 } myflow;

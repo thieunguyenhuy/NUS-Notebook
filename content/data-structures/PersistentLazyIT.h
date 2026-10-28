@@ -2,9 +2,9 @@
  * Author: Thieu Nguyen Huy
  * Description: Persistent segment tree with range updates and range sum queries.
  * Usage: Remember to call mytree.resize(n) before any operations.
- * Time: O(\log N) for each operation
- * Memory: O(4 \cdot \log N \cdot numUpdates) 
- * Status: Not tested
+ * Time: O(\log N) amortized per update, O(\log N) per query
+ * Memory: O(\log N \cdot numUpdates) 
+ * Status: Randomized version-history regression test
  */
 
 struct Node {
@@ -14,7 +14,8 @@ struct Node {
     Node(int _le = 0, int _ri = 0, ll _lazy = 0, ll _sum = 0) {
         le = _le, ri = _ri, lazy = _lazy, sum = _sum;
     }
-} nodes[4 * N * LG];
+};
+vector<Node> nodes(1); // Index 0 is the all-zero subtree.
 int numNode = 0;
 vector<int> version;
 
@@ -31,7 +32,7 @@ struct PersistentLazyIT {
 
     int newlazykid(int oldId, int l, int r, ll val) {
         int id = ++numNode;
-        nodes[id] = nodes[oldId];
+        nodes.push_back(nodes[oldId]);
 
         nodes[id].sum += 1ll * val * (r - l + 1);
         nodes[id].lazy += val;
@@ -41,6 +42,7 @@ struct PersistentLazyIT {
 
     int newparent(int le, int ri) {
         int id = ++numNode;
+        nodes.emplace_back();
         nodes[id].le = le, nodes[id].ri = ri;
         nodes[id].sum = nodes[le].sum + nodes[ri].sum;
         return id;
@@ -59,24 +61,27 @@ struct PersistentLazyIT {
     int update(int oldId, int l, int r, int u, int v, ll val) {
         if (l > v || r < u) return oldId;
         if (u <= l && r <= v) return newlazykid(oldId, l, r, val);
-        push(oldId, l, r); int mid = (l + r) >> 1;
-        int le = update(nodes[oldId].le, l, mid, u, v, val),
-            ri = update(nodes[oldId].ri, mid + 1, r, u, v, val);
+        int copy = newlazykid(oldId, l, r, 0);
+        push(copy, l, r); int mid = (l + r) >> 1;
+        int le = update(nodes[copy].le, l, mid, u, v, val),
+            ri = update(nodes[copy].ri, mid + 1, r, u, v, val);
         return newparent(le, ri);
     }
 
-    int update(int root, int u, int v, int val) {
+    int update(int root, int u, int v, ll val) {
+        assert(n > 0);
         return update(root, 1, n, u, v, val);
     }
 
-    ll get(int id, int l, int r, int u, int v) {
+    ll get(int id, int l, int r, int u, int v, ll carry = 0) {
         if (l > v || r < u) return 0;
-        if (u <= l && r <= v) return nodes[id].sum;
-        push(id, l, r); int mid = (l + r) >> 1;
-        return get(nodes[id].le, l, mid, u, v) + get(nodes[id].ri, mid + 1, r, u, v);
+        if (u <= l && r <= v) return nodes[id].sum + carry * (r - l + 1);
+        carry += nodes[id].lazy; int mid = (l + r) >> 1;
+        return get(nodes[id].le, l, mid, u, v, carry) + get(nodes[id].ri, mid + 1, r, u, v, carry);
     }
 
     ll get(int root, int u, int v) {
+        assert(n > 0);
         return get(root, 1, n, u, v);
     }
 } mytree;

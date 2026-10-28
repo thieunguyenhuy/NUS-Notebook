@@ -22,7 +22,7 @@ int main() {
 
 		rep(i,0,13) {
 			rep(j,0,13) {
-				ll v = ft.query(i, j);
+				ll v = ft.query(i - 1, j - 1); // query() has inclusive bounds.
 				if (i == 0 || j == 0) assert(v == 0);
 				else {
 					sumto[i][j] = grid[i-1][j-1] + sumto[i-1][j] + sumto[i][j-1] - sumto[i-1][j-1];

@@ -22,6 +22,7 @@ namespace Gauss {
     }
 
     int gauss() {
+        ans.reset();
         for (int i = 0; i < m; ++i) where[i] = -1;
         int row = 0;
         for (int col = 0; col < m && row < n; ++col) {

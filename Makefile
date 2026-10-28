@@ -1,4 +1,4 @@
-LATEXCMD = pdflatex -shell-escape -output-directory build/
+LATEXCMD = pdflatex -interaction=nonstopmode -halt-on-error -file-line-error -shell-escape -output-directory build/
 export TEXINPUTS=.:content/tex/:
 export max_print_line = 1048576
 
@@ -26,7 +26,8 @@ kactl: test-session.pdf | build
 	cp build/kactl.pdf kactl.pdf
 
 clean:
-	cd build && rm -f kactl.aux kactl.log kactl.tmp kactl.toc kactl.pdf kactl.ptc
+	rm -f $(addprefix build/,kactl.aux kactl.log kactl.tmp kactl.toc kactl.pdf kactl.ptc kactl.out header.tmp header2.tmp test-session.aux test-session.log test-session.out test-session.ptc test-session.toc test-session.pdf missfont.log)
+	rm -f header.tmp
 
 veryclean: clean
 	rm -f kactl.pdf test-session.pdf
@@ -42,7 +43,8 @@ test:
 test-compiles:
 	./doc/scripts/compile-all.sh .
 
-test-session.pdf: content/test-session/test-session.tex content/test-session/chapter.tex | build
+test-session.pdf: content/test-session/test-session.tex content/test-session/chapter.tex content/tex/kactlpkg.sty content/tex/preprocessor.py Makefile | build
+	$(LATEXCMD) content/test-session/test-session.tex
 	$(LATEXCMD) content/test-session/test-session.tex
 	cp build/test-session.pdf test-session.pdf
 

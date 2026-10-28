@@ -29,6 +29,7 @@ struct PersistentIT { // 1-indexed array
     int update(int oldId, int l, int r, int p, int val) {
         if (l > p || r < p) return oldId;
  
+        assert(numNode + 1 < MAX_UPDATES);
         numNode++; int id = numNode;
         if (l == r) {
             nodes[id] = nodes[oldId];

@@ -7,6 +7,9 @@
 import sys
 import getopt
 import subprocess
+from pathlib import Path
+
+HEADER_FILE = Path("build/header.tmp")
 
 
 def escape(input):
@@ -49,7 +52,7 @@ def ordoescape(input, esc=True):
 def addref(caption, outstream):
     caption = pathescape(caption).strip()
     print(r"\kactlref{%s}" % caption, file=outstream)
-    with open('header.tmp', 'a') as f:
+    with HEADER_FILE.open('a') as f:
         f.write(caption + "\n")
 
 COMMENT_TYPES = [
@@ -209,10 +212,10 @@ def getfilename(input):
 def print_header(data, outstream):
     parts = data.split('|')
     until = parts[0].strip() or parts[1].strip()
-    if not until:
+    if not until or not HEADER_FILE.exists():
         # Nothing on this page, skip it.
         return
-    with open('header.tmp') as f:
+    with HEADER_FILE.open() as f:
         lines = [x.strip() for x in f.readlines()]
     if until not in lines:
         # Nothing new on the page.
@@ -229,7 +232,7 @@ def print_header(data, outstream):
     output = r"\hspace{3mm}\textbf{" + output + "}"
     output = "\\fontsize{%d}{%d}" % (font_size, font_size) + output
     print(output, file=outstream)
-    with open('header.tmp', 'w') as f:
+    with HEADER_FILE.open('w') as f:
         for line in lines[ind:]:
             f.write(line + "\n")
 

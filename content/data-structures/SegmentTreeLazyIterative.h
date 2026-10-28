@@ -8,13 +8,13 @@
  */
 template<class T,class U> struct segtree{
     //fill merge node + node here
-    T TT(T &le, T &ri){} 
+    T TT(T &le, T &ri); 
     
     //fill apply lazy "app" variable to "node" variable here
-    void UT(U &app, T &node){}
+    void UT(U &app, T &node);
     
-    //fill merge lazy + lazy here and assign it to variable "app"
-    void UU(U &app, U &node){}
+    //Append new lazy "node" to existing lazy "app", assigning to "app"
+    void UU(U &app, U &node);
 
     //Tid, Uid are default values of T, U, 
     //representing empty node and empty lazy (no change). 
@@ -40,7 +40,7 @@ template<class T,class U> struct segtree{
     }
     void apply(int v, U &f){
         UT(f, seg[v]);
-        if(v < n) UU(f, d[v]);
+        if(v < n) UU(d[v], f);
     }
     void push(int v){
         apply(v << 1, d[v]), apply((v << 1) | 1, d[v]);
@@ -51,7 +51,7 @@ template<class T,class U> struct segtree{
         if(l >= r) return;
         for(int i = lg; i >= 1; i--){
             if((l >> i << i) != l) push(l >> i);
-            if((r >> i << i) != r) push(r >> i);
+            if((r >> i << i) != r) push((r - 1) >> i);
         }
         int l0 = l, r0 = r;
         for(;l < r; l >>= 1, r >>= 1){
@@ -67,7 +67,7 @@ template<class T,class U> struct segtree{
         l = l0, r = r0;
         for(int i = 1; i <= lg; i++){
             if((l >> i << i) != l) refresh(l >> i);
-            if((r >> i << i) != r) refresh(r >> i);
+            if((r >> i << i) != r) refresh((r - 1) >> i);
         }
     }
     T query(int l, int r){ // query in [l, r]
@@ -75,7 +75,7 @@ template<class T,class U> struct segtree{
         if(l >= r) return Tid;
         for(int i = lg; i >= 1; i--){
             if((l >> i << i) != l) push(l >> i);
-            if((r >> i << i) != r) push(r >> i);
+            if((r >> i << i) != r) push((r - 1) >> i);
         }
         T le = Tid, ri = Tid;
         for(;l < r; l >>= 1, r >>= 1){

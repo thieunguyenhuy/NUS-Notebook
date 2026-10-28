@@ -37,7 +37,7 @@ struct MCMF {
     }
 
     bool spfa(int source, int sink, vector<ll> &dist, vector<int> &par) {
-        dist.assign(n + 1, INF), par.assign(n + 1, -1);
+        dist.assign(n + 1, FLOW_INF), par.assign(n + 1, -1);
         vector<bool> inQueue(n + 1, false); queue<int> q;
         dist[source] = 0; inQueue[source] = true; q.emplace(source);
         while (!q.empty()) {
@@ -46,7 +46,8 @@ struct MCMF {
             for (auto id : adj[u]) {
                 int v = edges[id].v;
                 if (edges[id].capacity - edges[id].flow <= 0) continue;
-                if (minimize(dist[v], dist[u] + edges[id].cost)) {
+                if (dist[v] > dist[u] + edges[id].cost) {
+                    dist[v] = dist[u] + edges[id].cost;
                     par[v] = id;
                     if (!inQueue[v]) {
                         inQueue[v] = true;
@@ -55,15 +56,16 @@ struct MCMF {
                 }
             }
         }
-        return dist[sink] != INF;
+        return dist[sink] != FLOW_INF;
     }
 
-    pll minCost(int source, int sink) {
+    pair<ll, ll> minCost(int source, int sink) {
+        assert(source != sink);
         ll flow = 0, cost = 0; vector<ll> dist; vector<int> par;
         while (spfa(source, sink, dist, par)) {
             ll amount = FLOW_INF - flow; int cur = sink;
             while (cur != source) {
-                minimize(amount, edges[par[cur]].capacity - edges[par[cur]].flow);
+                amount = min(amount, edges[par[cur]].capacity - edges[par[cur]].flow);
                 cur = edges[par[cur]].u;
             }
 

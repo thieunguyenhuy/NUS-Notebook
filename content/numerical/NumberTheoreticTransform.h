@@ -16,9 +16,14 @@
  */
 #pragma once
 
-#include "../number-theory/ModPow.h"
 
 const ll mod = (119 << 23) + 1, root = 62; // = 998244353
+ll nttPow(ll a, ll e) {
+    ll res = 1;
+    for (; e; e >>= 1, a = a * a % mod)
+        if (e & 1) res = res * a % mod;
+    return res;
+}
 // For p < 2^30 there is also e.g. 5 << 25, 7 << 26, 479 << 21
 // and 483 << 21 (same root). The last two are > 10^9.
 typedef vector<ll> vl;
@@ -27,7 +32,7 @@ void ntt(vl &a) {
 	static vl rt(2, 1);
 	for (static int k = 2, s = 2; k < n; k *= 2, s++) {
 		rt.resize(n);
-		ll z[] = {1, modpow(root, mod >> s)};
+		ll z[] = {1, nttPow(root, mod >> s)};
 		rep(i,k,2*k) rt[i] = rt[i / 2] * z[i & 1] % mod;
 	}
 	vi rev(n);
@@ -44,7 +49,7 @@ vl conv(const vl &a, const vl &b) {
 	if (a.empty() || b.empty()) return {};
 	int s = sz(a) + sz(b) - 1, B = 32 - __builtin_clz(s),
 	    n = 1 << B;
-	int inv = modpow(n, mod - 2);
+	int inv = nttPow(n, mod - 2);
 	vl L(a), R(b), out(n);
 	L.resize(n), R.resize(n);
 	ntt(L), ntt(R);

@@ -16,7 +16,7 @@ struct bipartite_matching {
 	}
 
 	void add(int u, int v) {
-		adj[u].emb(v);
+		adj[u].emplace_back(v);
 	}
 
 	bool bfs() {
@@ -64,8 +64,8 @@ struct bipartite_matching {
 	pair <vector <int>, vector <int>> minimum_vertex_cover() {
     	vector <int> L, R;
     	for (int u = 1; u <= n; ++u) {
-    		if (dist[u] == -1) L.emb(u);
-    		else if (match1[u] != -1) R.emb(match1[u]);
+    		if (dist[u] == -1) L.emplace_back(u);
+    		else if (match1[u] != -1) R.emplace_back(match1[u]);
     	}
 		return {L, R};
 	}
@@ -75,8 +75,8 @@ struct bipartite_matching {
 		vector <int> L, R;
 		vector <bool> mark1(n + 2), mark2(m + 2);
 		for (int x: _L) mark1[x] = true; for (int x: _R) mark2[x] = true;
-		for (int u = 1; u <= n; u++) if (!mark1[u]) L.emb(u);
-		for (int u = 1; u <= m; u++) if (!mark2[u]) R.emb(u);
+		for (int u = 1; u <= n; u++) if (!mark1[u]) L.emplace_back(u);
+		for (int u = 1; u <= m; u++) if (!mark2[u]) R.emplace_back(u);
 		return {L, R};
 	}
 

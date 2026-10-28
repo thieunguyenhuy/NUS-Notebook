@@ -7,6 +7,7 @@
 
 namespace MillerRabin {
     using T = unsigned long long;
+    using Int = __uint128_t;
 
     T binpow(T x, T y, T mod) {
         T ans = 1; x %= mod;
@@ -30,7 +31,7 @@ namespace MillerRabin {
 
     bool isPrime(T n) {
         if (n < 2 || n % 6 % 4 != 1) return (n | 1) == 3;
-        int s = CTZ(n - 1); T d = n >> s;
+        int s = __builtin_ctzll(n - 1); T d = n >> s;
 
         const T bases[] = {2, 325, 9375, 28178, 450775, 9780504, 1795265022};
 

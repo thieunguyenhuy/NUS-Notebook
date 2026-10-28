@@ -13,7 +13,7 @@
 // ABBA... and BAAB... of length 2^10 hash the same mod 2^64).
 // "typedef ull H;" instead if you think test data is random,
 // or work mod 10^9+7 if the Birthday paradox is not a problem.
-typedef uint64_t ull;
+typedef unsigned long long ull;
 struct H {
 	ull x; H(ull x=0) : x(x) {}
 	H operator+(H o) { return x + o.x + (x + o.x < x); }

@@ -1,7 +1,7 @@
 /**
  * Author: Thieu Nguyen Huy
- * Description: Splay tree to find add element, remove element and get the k-th element, 1-indexed
- * Time: Amortized O(\log N) on average for each operation
+ * Description: Implicit splay tree with insertion, deletion and access by 1-based sequence position.
+ * Time: O(\log N) amortized per operation
  * Status: Tested on SPOJ
  */
 
@@ -29,6 +29,7 @@ Node nodes[NUM_NODES];
 int numNode = 0;
 
 Node *newNode(int value = 0) {
+    assert(numNode < NUM_NODES);
     nodes[numNode] = Node(value);
     return &nodes[numNode++];
 }
@@ -38,7 +39,7 @@ struct SplayTree {
 
     SplayTree() {
         root = newNode(0);
-        link(root, newNode(inf), 1);
+        link(root, newNode(0), 1);
         root->pushUp();
     }
 
@@ -77,7 +78,9 @@ struct SplayTree {
         }
     }
 
-    void find(int k, Node *s = nullptr) { // assume tree has at least k vertices
+    // Zero-based rank including sentinels; target must be below s if s != nullptr.
+    void find(int k, Node *s = nullptr) {
+        assert(0 <= k && k < root->sz);
         Node *p = root;
         while (true) {
             int cntLeft = (p->child[0] ? p->child[0]->sz : 0);
@@ -94,6 +97,7 @@ struct SplayTree {
 
     // Insert before the current k-th element. 1 <= k <= n + 1
     void insert(int k, int val) {
+        assert(1 <= k && k <= root->sz - 1);
         find(k);
         find(k - 1, root);
 
@@ -105,6 +109,7 @@ struct SplayTree {
 
     // 1 <= k <= n
     void remove(int k) {
+        assert(1 <= k && k <= root->sz - 2);
         find(k + 1);
         find(k - 1, root);
 
@@ -115,6 +120,7 @@ struct SplayTree {
 
     // 1 <= k <= n
     int get(int k) {
+        assert(1 <= k && k <= root->sz - 2);
         find(k);
         return root->value;
     }

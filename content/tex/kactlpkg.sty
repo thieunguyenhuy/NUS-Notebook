@@ -109,13 +109,16 @@
 
 % Redefine appendix
 \renewcommand\appendix{
-	% Change chapter counter to A,B,C,...
-	\setcounter{tocdepth}{8}
-	\setcounter{chapter}{0}
-	\def\thechapter{\Alph{chapter}}
-	% Switch to appendixmode defined above (disables TOC entries)
-	\setboolean{appendixmode}{true}
-	\clearpage
+	% Multiple appendix chapters may each request appendix mode.
+	\ifthenelse{\boolean{appendixmode}}{}{
+		\setcounter{tocdepth}{8}
+		\setcounter{chapter}{0}
+		\def\thechapter{\Alph{chapter}}
+		% Keep appendix hyperlinks distinct from numbered chapter anchors.
+		\renewcommand{\theHchapter}{appendix.\Alph{chapter}}
+		\setboolean{appendixmode}{true}
+		\clearpage
+	}
 }
 
 \def\@makechapterhead#1{

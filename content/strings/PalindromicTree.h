@@ -8,9 +8,13 @@
  */
 
 namespace PalindromicTree {
-const int N = 1e5, sigma = 26;
+const int N = 100000 + 5, sigma = 26;
 int s[N], len[N], link[N], to[N][sigma], n, last, sz;
-void init() {s[n++] = -1; link[0] = 1; len[1] = -1; sz = 2;}
+void init() {
+    fill(len, len + sz, 0); fill(link, link + sz, 0);
+    for (int i = 0; i < sz; ++i) fill(to[i], to[i] + sigma, 0);
+    n = last = 0; s[n++] = -1; link[0] = 1; len[1] = -1; sz = 2;
+}
 int get_link(int v) {
     while (s[n - len[v] - 2] != s[n - 1]) v = link[v];
     return v;

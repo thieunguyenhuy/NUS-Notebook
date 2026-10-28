@@ -77,6 +77,7 @@ double dis(Point m, Line d) { // d(M, delta)
 }
  
 double polygon_area(vector <Point> p) {
+	if (p.size() < 3) return 0;
 	double res = 0;
 	for (int i = 1; i < p.size() - 1; i++)
 		res += cross(p[i] - p[0], p[i + 1] - p[0]);
@@ -125,6 +126,7 @@ bool obtuse(Point M, Point A, Point B) { // MAB > 90
 } // tested
  
 double dist(Point M, Point A, Point B) { // dis(M, segment AB)
+if (A == B) return dis(M, A);
 //	check MBA <= 90 && MAB <= 90
 	if (obtuse(M, A, B) || obtuse(M, B, A)) return min(dis(M, A), dis(M, B));
 	return dis(M, line(A, B));

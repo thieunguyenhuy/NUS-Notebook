@@ -1,12 +1,14 @@
 /**
  * Author: Thieu Nguyen Huy
  * Description: FFT to multiply two polynomials.
- * Usage: Get the real answer then convert to integer and modulo.
+ * Usage: Set MOD. Rounded convolution coefficients must fit in a signed 64-bit integer.
  * Time: O(N \log N) where N is the total sizes of two polynomials
  * Status: Well-tested
  */
 
 namespace FFT {
+    using ld = long double;
+    const int MOD = 1000000007; // Set to the required modulus.
     const ld pi = atan2(1, 1) * 4;
  
     struct cmplx {
@@ -56,6 +58,7 @@ namespace FFT {
     }
  
     vector<int> multiply(vector<int> &s, vector<int> &t) {
+        if (s.empty() || t.empty()) return {};
         int need = (int) s.size() + t.size() - 1, sz = 1;
         while (sz < need) sz <<= 1;
         vector<cmplx> a(sz), b(sz);
@@ -75,7 +78,7 @@ namespace FFT {
         reverse(a.begin() + 1, a.end());
  
         vector<int> ans(need);
-        for (int i = 0; i < need; ++i) ans[i] = (Int)(round(a[i].a / sz)) % MOD;
+        for (int i = 0; i < need; ++i) ans[i] = (llround(a[i].a / sz) % MOD + MOD) % MOD;
         return ans;
     }
 }

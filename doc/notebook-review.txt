@@ -1,0 +1,90 @@
+NUS Notebook review — 2026-10-28
+
+Changes
+- Enabled all 12 content chapters in content/kactl.tex. Each chapter now lists all
+  its source/text files and includes its reference diagrams. Removed the missing
+  FastSegmentTree.h import. Shared build assets in content/tex and the standalone
+  test-session document wrapper are not printed as notebook listings.
+- Fixed SuffixArray's nonexistent get() call, unsigned character ordering, and
+  LCP reads past string boundaries (including embedded NUL characters).
+- Initialized FastSet storage, supplied init(), removed undefined shifts by 64,
+  and removed dependencies on undefined bit-operation macros.
+- Fixed iterative lazy segment-tree right-boundary propagation/rebuilding and
+  lazy composition destination. TT/UT/UU remain problem-specific methods to define.
+- DsuRollback now records redundant unite() calls so rollback(k) agrees with
+  TimeSegmentTree's contract. IMPORTANT: k counts ALL unite calls, not just
+  successful merges. Restored the separate snapshot-based RollbackUF API used by
+  DirectedMST; its rollback argument is a saved time, not an operation count.
+- Restored RMQ and LazySegmentTree from this repository's history, fixing missing
+  production dependencies in LCA, CompressTree and HLD. The lazy tree does not
+  force the global bump allocator onto callers.
+- PersistentLazyIT now has a dynamic node pool instead of undefined N/LG bounds,
+  preserves existing node versions during updates, accepts 64-bit update values,
+  and performs queries without allocations. Dynamic allocation makes update
+  complexity amortized O(log N). Added a pool-capacity assertion to PersistentIT.
+- Matrix now reduces multiplication results before they can feed another product,
+  normalizes signed input, handles empty matrices, and checks exponentiation
+  dimensions. Configure Matrix::MOD (default 1e9+7); entries assigned through []
+  must already be reduced, and 8*MOD*MOD must fit in signed 64-bit.
+- Replaced overflow-prone CHT cross products with 128-bit arithmetic and removed
+  redundant intersection ties. Normal line evaluations must still fit in ll.
+- Fixed INT_MIN deletion overflow and detached-node leaks in the explicit treap;
+  freed removed nodes in the implicit treap. Explicit erase removes all equal keys.
+- MaxFlow::minCut now returns only positive-capacity original edges, excluding
+  zero-capacity residual reverse edges. Guarded equal flow source and sink.
+- Removed missing macro/type dependencies from custom matching, 2-SAT, flow,
+  primality and FFT snippets. FFT::MOD is configurable (default 1e9+7); rounded
+  convolution coefficients must fit in signed 64-bit and floating precision.
+- NTT now uses a power helper with its actual 998244353 modulus. Modular square
+  root has its own modulus-aware helper and handles p=2.
+- Reset GF(2) Gaussian-elimination answers and palindromic-tree state between
+  uses; enlarged the palindromic-tree arrays for their sentinel/root overhead.
+- Fixed repeated FT2 initialization and INT_MAX y-coordinate queries while
+  preserving its documented inclusive query convention; updated the old test
+  to use that convention. Empty virtual-tree subsets and degenerate geometric
+  segments/polygons now behave safely.
+- Fixed hashing's ull typedef conflict with the stress-test template and made
+  the Codeforces hash conversion operator const-correct.
+- Added explicit <cassert> to the contest template for current GCC versions.
+  Normalized shell scripts and the skip list to Unix line endings: CRLF broke
+  both hash generation and the compile exclusion list.
+- Corrected a missing zero in Bezout's identity, the variable in the power-sum
+  identity, the first-kind Stirling-number table, and two spelling errors.
+
+Validation
+- Official doc/scripts/compile-all.sh: 151/151 non-fragment headers passed.
+- All 164 active listings successfully processed by content/tex/preprocessor.py.
+- doc/scripts/check-content.py: all 12 chapters enabled; all chapter files and
+  diagrams referenced; no missing or duplicate imports.
+- 24 new regression executables in stress-tests/notebook passed with libstdc++
+  debug iterators and assertions, covering the changed structures and arithmetic.
+- 70 existing stress tests passed. These include the longer FastDelaunay,
+  factorization and linear-recurrence tests (rerun with a 45-second limit).
+- No LaTeX compilation was performed, and no existing PDF was modified. A full
+  rendered-document/layout check remains for your own LaTeX installation.
+- SoCLaaS was attempted with a file-reading tool schema but was unreachable due
+  to DNS resolution failure. Review and verification were done locally.
+
+Known limits and remaining legacy-test maintenance
+- ModInverse.h, SolveLinear2.h, DivideAndConquerDP.h and Unrolling.h are intended
+  insertion/adaptation fragments; Hashing-codeforces.h contains an example main.
+  These five are explicitly excluded from standalone header compilation.
+- MoAlgo and segtree_time require definitions of their declared callbacks after
+  inclusion. The new regression tests provide working examples.
+- 11 existing tests still do not compile because they refer to deleted headers
+  or old APIs, rather than the current notebook interfaces:
+    data-structures/FenwickTree.cpp       deleted FenwickTree.h
+    data-structures/LineContainer.cpp     deleted LineContainer.h
+    data-structures/SegmentTree.cpp       deleted SegmentTree.h
+    data-structures/Treap.cpp             old Node/cnt/each API
+    geometry/ManhattanMST.cpp             deleted UnionFind.h
+    graph/HLD.cpp                        oldHLD requires deleted SegmentTree.h
+    graph/LinkCutTree.cpp                 deleted UnionFind.h
+    graph/MinCostMaxFlow.cpp              old addEdge/setpi/maxflow API
+    graph/WeightedMatching.cpp            same old MCMF API
+    strings/AhoCorasick.cpp               old constructor/findAll API
+    strings/SuffixArray.cpp               old sentinel/constructor API
+  The new tests cover the current treap, HLD, flow and suffix-array interfaces;
+  these legacy files were not deleted or silently excluded from make test.
+- This is a broad compilation and regression review, not a proof of every
+  algorithm. Problem-specific callback logic and numeric limits still matter.

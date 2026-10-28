@@ -23,9 +23,8 @@ struct ConvexHullTrick {
 
     bool isBad(Line l1, Line l2, Line l3) {
         // bad when x of (l1 x l3) < x of (l1 x l2)
-        assert(l3.b - l1.b <= INF / (l1.m - l2.m));
-        assert(l2.b - l1.b <= INF / (l1.m - l3.m));
-        return (l3.b - l1.b) * (l1.m - l2.m) < (l2.b - l1.b) * (l1.m - l3.m);
+        return ((__int128)l3.b - l1.b) * ((__int128)l1.m - l2.m)
+             <= ((__int128)l2.b - l1.b) * ((__int128)l1.m - l3.m);
     }
 
     vector<Line> lines;

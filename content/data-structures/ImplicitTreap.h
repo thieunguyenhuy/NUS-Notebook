@@ -12,7 +12,7 @@
 mt19937_64 rng(6736);
 struct node{
     int x, sz = 1;
-    ull y;
+    uint64_t y;
     node *le = nullptr, *ri = nullptr;
     node(int x): x(x), y(rng()) {}
     node(int x, int y): x(x), y(y) {}
@@ -32,13 +32,13 @@ namespace implicit_treap{ //1-index
         pair<pnode, pnode> ans;
         if(get_sz(t->le) + 1 <= i){
             ans = split(t->ri, i - get_sz(t->le) - 1);
-            t->ri = ans.fi; ans.fi = t;
-            refresh(ans.fi);
+            t->ri = ans.first; ans.first = t;
+            refresh(ans.first);
         }
         else{
             ans = split(t->le, i);
-            t->le = ans.se; ans.se = t;
-            refresh(ans.se);
+            t->le = ans.second; ans.second = t;
+            refresh(ans.second);
         }
         return ans;
     }
@@ -65,5 +65,6 @@ namespace implicit_treap{ //1-index
         auto [t1, mid] = split(t, i - 1);
         auto [tx, t2] = split(mid, 1);
         t = merge(t1, t2);
+        delete tx;
     }
 }

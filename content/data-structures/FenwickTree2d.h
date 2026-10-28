@@ -46,6 +46,7 @@ struct FT2 {
 	FT2(int limx) : ypos(limx + 5) {}
 	void init() {
         call_init = true;
+        ybit.clear();
 		for (vi& v : ypos) sort(all(v)), ybit.emplace_back(sz(v));
 	}
 	int get_id(int x, int y) {
@@ -57,9 +58,9 @@ struct FT2 {
 	}
 	ll query(int x, int y) { //calculates sum for <=x, <=y.
         if(!call_init) init();
-        x++, y++;
+        x++;
 		ll sum = 0;
-		for (; x; x -= (x & (-x))) sum += ybit[x - 1].query(get_id(x - 1, y));
+		for (; x; x -= (x & (-x))) sum += ybit[x - 1].query(upper_bound(all(ypos[x - 1]), y) - ypos[x - 1].begin());
 		return sum;
 	}
 };

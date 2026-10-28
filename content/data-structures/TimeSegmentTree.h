@@ -16,57 +16,57 @@
  * Status: Tested on one problem
  */
 namespace segtree_time{ //time is 1-indexed
-    //ope is the update type put into the segtree,
-    //Q is the type of the query answers.
-    using ope = pii;
-    using Q = int;
-    //MAX_TIME is the maximum time allowed
-    const int MAX_TIME = 3e5;
-    vector<vector<ope>> group(4 * MAX_TIME + 5);
-    void update(int v, int TL, int TR, int l, int r, const ope &x){
-        if(r < TL || l > TR) return;
-        if(l <= TL && TR <= r){
-            group[v].push_back(x); return;
-        }
-        int TM = ((TL + TR) >> 1);
-        update(v << 1, TL, TM, l, r, x);
-        update((v << 1) | 1, TM + 1, TR, l, r, x);
+  //ope is the update type put into the segtree,
+  //Q is the type of the query answers.
+  using ope = pii;
+  using Q = int;
+  //MAX_TIME is the maximum time allowed
+  const int MAX_TIME = 3e5;
+  vector<vector<ope>> group(4 * MAX_TIME + 5);
+  void update(int v, int TL, int TR, int l, int r, const ope &x){
+    if(r < TL || l > TR) return;
+    if(l <= TL && TR <= r){
+      group[v].push_back(x); return;
     }
-    void update(int l, int r, const ope &x){
-        assert(1 <= l && l <= r && r <= MAX_TIME);
-        update(1, 1, MAX_TIME, l, r, x);
+    int TM = ((TL + TR) >> 1);
+    update(v << 1, TL, TM, l, r, x);
+    update((v << 1) | 1, TM + 1, TR, l, r, x);
+  }
+  void update(int l, int r, const ope &x){
+    assert(1 <= l && l <= r && r <= MAX_TIME);
+    update(1, 1, MAX_TIME, l, r, x);
+  }
+  Q calc(int i); // Define to answer the i-th query.
+  void add(ope &x); // Define to apply x to your DS.
+  //rollback the last k operations of your DS here.
+  //Note that ALL operations are counted, EVEN IF they don't change the DS.
+  void rollback(int k); 
+  inline void DFS(int v, int TL, int TR, vector<pii> &que, int &ptr, vector<Q> &ans){
+    if(ptr == que.size()) return;
+    for(ope &x: group[v]) add(x);
+    if(TL != TR){
+      int TM=((TL + TR) >> 1);
+      DFS(v << 1, TL, TM, que, ptr, ans);
+      DFS((v << 1) | 1,TM + 1, TR, que, ptr, ans);
     }
-    Q calc(int i); // Define to answer the i-th query.
-    void add(ope &x); // Define to apply x to your DS.
-    //rollback the last k operations of your DS here.
-    //Note that ALL operations are counted, EVEN IF they don't change the DS.
-    void rollback(int k); 
-    inline void DFS(int v, int TL, int TR, vector<pii> &que, int &ptr, vector<Q> &ans){
-        if(ptr == que.size()) return;
-        for(ope &x: group[v]) add(x);
-        if(TL != TR){
-            int TM=((TL + TR) >> 1);
-            DFS(v << 1, TL, TM, que, ptr, ans);
-            DFS((v << 1) | 1,TM + 1, TR, que, ptr, ans);
-        }
-        else{
-            for(; ptr < que.size() && que[ptr].first == TL; ptr++){
-                ans[que[ptr].second] = calc(que[ptr].second);
-            }
-        }
-        rollback(group[v].size());
+    else{
+      for(; ptr < que.size() && que[ptr].first == TL; ptr++){
+        ans[que[ptr].second] = calc(que[ptr].second);
+      }
     }
-    //a query is of format {time_of_query, index_of_query}
-    inline vector<Q> solve_queries(vector<pii> &queries){
-        for (auto [time, index] : queries) {
-            assert(1 <= time && time <= MAX_TIME);
-            assert(0 <= index && index < (int)queries.size());
-        }
-        sort(queries.begin(), queries.end());
-        int ptr = 0;
-        vector<Q> ans(queries.size());
-        DFS(1, 1, MAX_TIME, queries, ptr, ans);
-        return ans;
+    rollback(group[v].size());
+  }
+  //a query is of format {time_of_query, index_of_query}
+  inline vector<Q> solve_queries(vector<pii> &queries){
+    for (auto [time, index] : queries) {
+      assert(1 <= time && time <= MAX_TIME);
+      assert(0 <= index && index < (int)queries.size());
     }
+    sort(queries.begin(), queries.end());
+    int ptr = 0;
+    vector<Q> ans(queries.size());
+    DFS(1, 1, MAX_TIME, queries, ptr, ans);
+    return ans;
+  }
 };
 using namespace segtree_time;

@@ -8,63 +8,63 @@
 // Adding decreasing slopes, query min
 // Use get() if query increasing, query() otherwise
 struct ConvexHullTrick {
-    const ll INF = 1e18;
-    struct Line {
-        ll m, b;
+  const ll INF = 1e18;
+  struct Line {
+    ll m, b;
 
-        Line(ll _m = 0, ll _b = 0) {
-            m = _m, b = _b;
-        }
-
-        ll eval(ll x) {
-            return m * x + b;
-        }
-    };
-
-    bool isBad(Line l1, Line l2, Line l3) {
-        // bad when x of (l1 x l3) < x of (l1 x l2)
-        return ((__int128)l3.b - l1.b) * ((__int128)l1.m - l2.m)
-             <= ((__int128)l2.b - l1.b) * ((__int128)l1.m - l3.m);
+    Line(ll _m = 0, ll _b = 0) {
+      m = _m, b = _b;
     }
 
-    vector<Line> lines;
-    int pointer = 0;
-
-    ConvexHullTrick() {
-        lines.clear(), pointer = 0;
+    ll eval(ll x) {
+      return m * x + b;
     }
+  };
 
-    void reset() {
-        lines.clear(), pointer = 0;
-    }
+  bool isBad(Line l1, Line l2, Line l3) {
+    // bad when x of (l1 x l3) < x of (l1 x l2)
+    return ((__int128)l3.b - l1.b) * ((__int128)l1.m - l2.m)
+       <= ((__int128)l2.b - l1.b) * ((__int128)l1.m - l3.m);
+  }
 
-    void add(ll m, ll b) { // insert line decreasing in slope
-        while (!lines.empty() && lines.back().m == m && lines.back().b > b)
-            lines.pop_back();
-        if (!lines.empty() && lines.back().m == m) return;
-        Line newLine(m, b);
-        while (lines.size() > 1 && isBad(lines[lines.size() - 2], lines.back(), newLine))
-            lines.pop_back();
-        lines.emplace_back(newLine);
-    }
+  vector<Line> lines;
+  int pointer = 0;
 
-    ll query(ll x) { // return min
-        if (lines.empty()) return INF;
-        if (lines.size() == 1) return lines[0].eval(x);
-        int low = 0, high = int(lines.size()) - 2, best = -1;
-        while (low <= high) {
-            int mid = (low + high) >> 1;
-            if (lines[mid + 1].eval(x) < lines[mid].eval(x)) low = (best = mid) + 1;
-            else high = mid - 1;
-        }
-        return lines[best + 1].eval(x);
-    }
+  ConvexHullTrick() {
+    lines.clear(), pointer = 0;
+  }
 
-    ll get(ll x) { //answer query increasing in x
-        if (lines.empty()) return INF;
-        if (pointer >= lines.size()) pointer = lines.size() - 1;
-        while (pointer + 1 < lines.size() && lines[pointer + 1].eval(x) < lines[pointer].eval(x))
-            ++pointer;
-        return lines[pointer].eval(x);
+  void reset() {
+    lines.clear(), pointer = 0;
+  }
+
+  void add(ll m, ll b) { // insert line decreasing in slope
+    while (!lines.empty() && lines.back().m == m && lines.back().b > b)
+      lines.pop_back();
+    if (!lines.empty() && lines.back().m == m) return;
+    Line newLine(m, b);
+    while (lines.size() > 1 && isBad(lines[lines.size() - 2], lines.back(), newLine))
+      lines.pop_back();
+    lines.emplace_back(newLine);
+  }
+
+  ll query(ll x) { // return min
+    if (lines.empty()) return INF;
+    if (lines.size() == 1) return lines[0].eval(x);
+    int low = 0, high = int(lines.size()) - 2, best = -1;
+    while (low <= high) {
+      int mid = (low + high) >> 1;
+      if (lines[mid + 1].eval(x) < lines[mid].eval(x)) low = (best = mid) + 1;
+      else high = mid - 1;
     }
+    return lines[best + 1].eval(x);
+  }
+
+  ll get(ll x) { //answer query increasing in x
+    if (lines.empty()) return INF;
+    if (pointer >= lines.size()) pointer = lines.size() - 1;
+    while (pointer + 1 < lines.size() && lines[pointer + 1].eval(x) < lines[pointer].eval(x))
+      ++pointer;
+    return lines[pointer].eval(x);
+  }
 } cht;

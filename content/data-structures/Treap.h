@@ -10,62 +10,62 @@
  */
 mt19937_64 rng(6736);
 struct node{
-    int x, sz = 1;
-    uint64_t y;
-    node *le = nullptr, *ri = nullptr;
-    node(int x): x(x), y(rng()) {}
-    node(int x, int y): x(x), y(y) {}
+  int x, sz = 1;
+  uint64_t y;
+  node *le = nullptr, *ri = nullptr;
+  node(int x): x(x), y(rng()) {}
+  node(int x, int y): x(x), y(y) {}
 };
 namespace treap{
-    using pnode = node*;
-    int get_val(pnode &p){
-        if(p == nullptr) return 0;
-        return p->sz;
+  using pnode = node*;
+  int get_val(pnode &p){
+    if(p == nullptr) return 0;
+    return p->sz;
+  }
+  void refresh(pnode &p){
+    p->sz = get_val(p->le) + get_val(p->ri) + 1;
+  }
+  //first is <=x, second is >x
+  pair<pnode, pnode> split(pnode t, int x, bool inclusive = true){
+    if(t == nullptr) return {nullptr, nullptr};
+    pair<pnode, pnode> ans;
+    if(t->x < x || (inclusive && t->x == x)){
+      ans = split(t->ri, x, inclusive);
+      t->ri = ans.first; ans.first = t;
+      refresh(ans.first);
     }
-    void refresh(pnode &p){
-        p->sz = get_val(p->le) + get_val(p->ri) + 1;
+    else{
+      ans = split(t->le, x, inclusive);
+      t->le = ans.second; ans.second = t;
+      refresh(ans.second);
     }
-    //first is <=x, second is >x
-    pair<pnode, pnode> split(pnode t, int x, bool inclusive = true){
-        if(t == nullptr) return {nullptr, nullptr};
-        pair<pnode, pnode> ans;
-        if(t->x < x || (inclusive && t->x == x)){
-            ans = split(t->ri, x, inclusive);
-            t->ri = ans.first; ans.first = t;
-            refresh(ans.first);
-        }
-        else{
-            ans = split(t->le, x, inclusive);
-            t->le = ans.second; ans.second = t;
-            refresh(ans.second);
-        }
-        return ans;
+    return ans;
+  }
+  //assume all t1->x < t2->x (ordering between trees)
+  pnode merge(pnode t1, pnode t2){
+    if(t1 == nullptr) return t2;
+    if(t2 == nullptr) return t1;
+    if(t1->y >= t2->y){
+      t1->ri = merge(t1->ri, t2); 
+      refresh(t1); return t1;
     }
-    //assume all t1->x < t2->x (ordering between trees)
-    pnode merge(pnode t1, pnode t2){
-        if(t1 == nullptr) return t2;
-        if(t2 == nullptr) return t1;
-        if(t1->y >= t2->y){
-            t1->ri = merge(t1->ri, t2); 
-            refresh(t1); return t1;
-        }
-        t2->le = merge(t1, t2->le); 
-        refresh(t2); return t2;
-    }
-    void insert(pnode &t, int x){
-        pnode p = new node(x);
-        auto [t1, t2] = split(t, x);
-        t = merge(merge(t1, p), t2);
-    }
-    void destroy(pnode t){
-        if (!t) return;
-        destroy(t->le); destroy(t->ri); delete t;
-    }
-    //erase ALL occurences of x; O(log N + number removed)
-    void erase(pnode &t, int x){
-        auto [t1, mid] = split(t, x, false);
-        auto [tx, t2] = split(mid, x);
-        t = merge(t1, t2);
-        destroy(tx);
-    }
+    t2->le = merge(t1, t2->le); 
+    refresh(t2); return t2;
+  }
+  void insert(pnode &t, int x){
+    pnode p = new node(x);
+    auto [t1, t2] = split(t, x);
+    t = merge(merge(t1, p), t2);
+  }
+  void destroy(pnode t){
+    if (!t) return;
+    destroy(t->le); destroy(t->ri); delete t;
+  }
+  //erase ALL occurences of x; O(log N + number removed)
+  void erase(pnode &t, int x){
+    auto [t1, mid] = split(t, x, false);
+    auto [tx, t2] = split(mid, x);
+    t = merge(t1, t2);
+    destroy(tx);
+  }
 }

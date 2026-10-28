@@ -21,35 +21,6 @@ namespace MoAlgo{
         if((que.first / blsz) & 1) que.second = -que.second;
         return {que.first / blsz, que.second};   
     }
-    inline vector<T_ans> mo_inter(vector<pii> que){
-        array<int, 2> inter = {0, 0};
-        add(0, inter);
-        int &L = inter[0], &R = inter[1]; 
-        vi order(sz(que));
-        vector<T_ans> ans(sz(que));
-        iota(all(order), 0);
-        auto cmp = [&](int s, int t){ 
-            return get_block(que[s]) < get_block(que[t]); 
-        };
-        sort(all(order), cmp);
-        for (int qi : order){
-            pii q = que[qi];
-            while(L > q.first){
-                add(L - 1, inter); L--;
-            }
-            while(R < q.second){
-                add(R + 1, inter); R++;
-            }
-            while(L < q.first){
-                remove(L, inter); L++;
-            }
-            while(R > q.second){
-                remove(R, inter); R--;
-            }
-            ans[qi] = calc(inter);
-        }
-        return ans;
-    }
     inline vector<T_ans> mo_tree(vector<pii> que, vector<vi>& graph, int root=0){
         int n = sz(graph);
         array<int, 2> path = {root, root};

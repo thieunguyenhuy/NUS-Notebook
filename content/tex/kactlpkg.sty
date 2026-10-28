@@ -5,7 +5,7 @@
 \usepackage[utf8]{inputenc}             % Encoding UTF-8
 \usepackage{listings}                   % Source code listings
 \usepackage{framed}                     % Source code listings
-\usepackage[a4paper,landscape,hmargin={0.5cm,0.5cm},vmargin={2.0cm,2.0cm}]{geometry}
+\usepackage[a4paper,landscape,hmargin={0.2cm,0.2cm},vmargin={2.0cm,2.0cm}]{geometry}
 \usepackage{multicol}                   % Split page in multiple columns
 \usepackage{fancyhdr}                   % Fancy headers
 \usepackage{amsbsy, amssymb, amsmath}   % Enable math symbols
@@ -14,6 +14,15 @@
 \usepackage{ifthen}                     % To enable some conditional programming in LaTeX
 \usepackage{courier}                    % To get bold typewriter typeface
 \usepackage{graphicx}                   % To rotate page numbers
+
+% Compact illustrations that follow the current column width, never float.
+% Override width/height through the optional graphicx options when needed.
+\newcommand{\kactlillustration}[2][width=0.38\linewidth,height=0.12\textheight]{%
+    \par\nopagebreak[4]\smallskip
+    {\centering
+    \noindent\includegraphics[keepaspectratio,#1]{#2}\par}%
+    \smallskip
+}
 \usepackage{fix-cm}                     % Large font sizes
 \usepackage{paralist}                   % For compact enumerations
 \usepackage[inline]{enumitem}           % For horizontal lists

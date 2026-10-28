@@ -25,7 +25,14 @@ for chapter in sorted(content.glob("*/chapter.tex")):
         listings += kind == "kactlimport"
         if not (folder / name).is_file():
             errors.append(f"Missing import: {folder.name}/{name}")
-    for name in re.findall(r"\\includegraphics(?:\[[^]]*\])?\{([^}]+)\}", text):
+    # Header descriptions may contain their own illustrations; do not require
+    # an additional copy in chapter.tex just to count the asset as referenced.
+    graphics_text = text + "\n" + "\n".join(
+        (folder / name).read_text() for name in sorted(seen)
+        if (folder / name).is_file() and (folder / name).suffix in {".h", ".tex"}
+    )
+    pattern = r"\\(?:includegraphics|kactlillustration)(?:\[[^]]*\])?\{([^}]+)\}"
+    for name in re.findall(pattern, graphics_text):
         seen.add(Path(name).name)
         if not (root / name).is_file() and not (content / "tex" / name).is_file():
             errors.append(f"Missing graphic: {name}")

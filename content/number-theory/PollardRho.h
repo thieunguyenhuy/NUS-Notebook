@@ -1,87 +1,71 @@
-namespace PollardRho {
-  mt19937 rnd(chrono::steady_clock::now().time_since_epoch().count());
-  const int P = 1e6 + 9;
-  ll seq[P];
-  int primes[P], spf[P];
-  inline ll add_mod(ll x, ll y, ll m) {
-    return (x += y) < m ? x : x - m;
-  }
-  inline ll mul_mod(ll x, ll y, ll m) {
-    ll res = __int128(x) * y % m;
-    return res;
-    // ll res = x * y - (ll)((long double)x * y / m + 0.5) * m;
-    // return res < 0 ? res + m : res;
-  }
-  inline ll pow_mod(ll x, ll n, ll m) {
-    ll res = 1 % m;
-    for (; n; n >>= 1) {
-      if (n & 1) res = mul_mod(res, x, m);
-      x = mul_mod(x, x, m);
-    }
-    return res;
-  }
-  // O(it * (logn)^3), it = number of rounds performed
-  inline bool miller_rabin(ll n) {
-    if (n <= 2 || (n & 1 ^ 1)) return (n == 2);
-    if (n < P) return spf[n] == n;
-    ll c, d, s = 0, r = n - 1;
-    for (; !(r & 1); r >>= 1, s++) {}
-    // each iteration is a round
-    for (int i = 0; primes[i] < n && primes[i] < 32; i++) {
-      c = pow_mod(primes[i], r, n);
-      for (int j = 0; j < s; j++) {
-        d = mul_mod(c, c, n);
-        if (d == 1 && c != 1 && c != (n - 1)) return false;
-        c = d;
-      }
-      if (c != 1) return false;
-    }
-    return true;
-  }
-  void init() {
-    int cnt = 0;
-    for (int i = 2; i < P; i++) {
-      if (!spf[i]) primes[cnt++] = spf[i] = i;
-      for (int j = 0, k; (k = i * primes[j]) < P; j++) {
-        spf[k] = primes[j];
-        if (spf[i] == spf[k]) break;
-      }
-    }
-  }
-  // returns O(n^(1/4))
-  ll pollard_rho(ll n) {
-    while (1) {
-      ll x = rnd() % n, y = x, c = rnd() % n, u = 1, v, t = 0;
-      ll *px = seq, *py = seq;
-      while (1) {
-        *py++ = y = add_mod(mul_mod(y, y, n), c, n);
-        *py++ = y = add_mod(mul_mod(y, y, n), c, n);
-        if ((x = *px++) == y) break;
-        v = u;
-        u = mul_mod(u, abs(y - x), n);
-        if (!u) return __gcd(v, n);
-        if (++t == 32) {
-          t = 0;
-          if ((u = __gcd(u, n)) > 1 && u < n) return u;
-        }
-      }
-      if (t && (u = __gcd(u, n)) > 1 && u < n) return u;
-    }
-  }
-  vector<ll> factorize(ll n) {
-    if (n == 1) return vector <ll>();
-    if (miller_rabin(n)) return vector<ll> {n};
-    vector <ll> v, w;
-    while (n > 1 && n < P) {
-      v.push_back(spf[n]);
-      n /= spf[n];
-    }
-    if (n >= P) {
-      ll x = pollard_rho(n);
-      v = factorize(x);
-      w = factorize(n / x);
-      v.insert(v.end(), w.begin(), w.end());
-    }
-    return v;
-  }
+/**
+ * Author: chilli, SJTU, pajenegod
+ * Date: 2020-03-04
+ * License: CC0
+ * Source: own
+ * Description: Pollard-rho randomized factorization algorithm. Returns prime
+ * factors of a number, in arbitrary order (e.g. 2299 -> \{11, 19, 11\}).
+ * Time: $O(n^{1/4})$, less for numbers with small factors.
+ * Status: stress-tested
+ *
+ * Details: This implementation uses the improvement described here
+ * (https://en.wikipedia.org/wiki/Pollard%27s_rho_algorithm#Variants), where
+ * one can accumulate gcd calls by some factor (40 chosen here through
+ * exhaustive testing). This improves performance by approximately 6-10x
+ * depending on the inputs and speed of gcd. Benchmark found here:
+ * (https://ideone.com/nGGD9T)
+ *
+ * GCD can be improved by a factor of 1.75x using Binary GCD
+ * (https://lemire.me/blog/2013/12/26/fastest-way-to-compute-the-greatest-common-divisor/).
+ * However, with the gcd accumulation the bottleneck moves from the gcd calls
+ * to the modmul. As GCD only constitutes ~12% of runtime, speeding it up
+ * doesn't matter so much.
+ *
+ * This code can probably be sped up by using a faster mod mul - potentially
+ * montgomery reduction on 128 bit integers.
+ * Alternatively, one can use a quadratic sieve for an asymptotic improvement,
+ * which starts being faster in practice around 1e13.
+ *
+ * Brent's cycle finding algorithm was tested, but doesn't reduce modmul calls
+ * significantly.
+ *
+ * Subtle implementation notes:
+ * - prd starts off as 2 to handle the case n = 4; it's harmless for other n
+ *   since we're guaranteed that n > 2. (Pollard rho has problems with prime
+ *   powers in general, but all larger ones happen to work.)
+ * - t starts off as 30 to make the first gcd check come earlier, as an
+ *   optimization for small numbers.
+ * - we vary f between restarts because the cycle finding algorithm does not
+ *   find the first element in the cycle but rather one at distance k*|cycle|
+ *   from the start, and that can result in continual failures if all cycles
+ *   have the same size for all prime factors. E.g. fixing f(x) = x^2 + 1 would
+ *   loop infinitely for n = 352523 * 352817, where all cycles have size 821.
+ * - we operate on residues in [i, n + i) which modmul is not designed to
+ *   handle, but specifically modmul(x, x) still turns out to work for small
+ *   enough i. (With reference to the proof in modmul-proof.tex, the argument
+ *   for "S is in [-c, 2c)" goes through unchanged, while S < 2^63 now follows
+ *   from S < 2c and S = x^2 (mod c) together implying S < c + i^2.)
+ */
+#pragma once
+
+#include "ModMul.h"
+#include "MillerRabin.h"
+
+ull pollard(ull n) {
+	ull x = 0, y = 0, t = 30, prd = 2, i = 1, q;
+	auto f = [&](ull x) { return modmul(x, x, n) + i; };
+	while (t++ % 40 || __gcd(prd, n) == 1) {
+		if (x == y) x = ++i, y = f(x);
+		if ((q = modmul(prd, max(x,y) - min(x,y), n))) prd = q;
+		x = f(x), y = f(f(y));
+	}
+	return __gcd(prd, n);
+}
+vector<ull> factor(ull n) {
+	if (n == 1) return {};
+	if (isPrime(n)) return {n};
+	ull x = pollard(n);
+	auto l = factor(x), r = factor(n / x);
+	l.insert(l.end(), all(r));
+	return l;
 }

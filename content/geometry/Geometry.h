@@ -8,18 +8,11 @@
 struct Point {
   double x, y;
   Point() {}
-  Point (double _x, double _y) {
-    this->x = _x; this->y = _y;
+  Point (double _x=0, double _y=0) : x(_x), y(_y) {}
+  double len(){return x * x + y * y;}
+  Point operator -(Point b){
+    return Point(x - b.x, y - b.y);
   }
-  
-  double len() {
-    return x * x + y * y;
-  }
-  
-  Point operator - (Point other) {
-    return {x - other.x, y - other.y};
-  }
-  
   Point operator - () {
     return Point(-x, -y);
   }
@@ -72,7 +65,7 @@ double dis(Point A, Point B) {
   return sqrt((B.x - A.x) * (B.x - A.x) + (B.y - A.y) * (B.y - A.y));
 }
  
-double dis(Point m, Line d) { // d(M, delta)
+double P(Point m, Line d) { // d(M, delta)
   return abs(d.a * m.x + d.b * m.y + d.c) / sqrt(d.a * d.a + d.b * d.b);
 }
  

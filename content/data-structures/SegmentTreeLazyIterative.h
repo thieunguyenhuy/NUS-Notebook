@@ -9,13 +9,10 @@
 template<class T,class U> struct segtree{
   //fill merge node + node here
   T TT(T &le, T &ri); 
-  
   //fill apply lazy "app" variable to "node" variable here
   void UT(U &app, T &node);
-  
   //Append new lazy "node" to existing lazy "app", assigning to "app"
   void UU(U &app, U &node);
-
   //Tid, Uid are default values of T, U, 
   //representing empty node and empty lazy (no change). 
   T Tid;

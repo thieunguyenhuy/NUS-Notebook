@@ -7,7 +7,6 @@
  * Status: Works
  */
 #pragma once
-
 // const ll mod = 1000000007, LIM = 200000; ///include-line
 vector<ll> inv(LIM); inv[1] = 1;
 rep(i,2,LIM) inv[i] = mod - (mod / i) * inv[mod % i] % mod;

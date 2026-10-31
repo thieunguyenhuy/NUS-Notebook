@@ -26,7 +26,6 @@ bool same_side(pt a, pt b, line l){
 } 
 bool inside_line(pt p, line l){ return l.side(p) == 0;}
 line perp_line(pt p, line l) { return line(p, p + perp(l.v));}
-
 //set refl=true to get line reflection instead
 pt line_proj(pt p, line l, bool refl=false){
   return p - perp(l.v) * l.side(p) * (1 + refl) / sq_len(l.v);

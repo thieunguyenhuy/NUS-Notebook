@@ -12,9 +12,7 @@ Returns a vector with the vertices of a polygon with everything to the left of t
  * Status: tested but not extensively
  */
 #pragma once
-
 #include "Point.h"
-
 typedef Point<double> P;
 vector<P> polygonCut(const vector<P>& poly, P s, P e) {
   vector<P> res;

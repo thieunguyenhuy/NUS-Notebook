@@ -6,11 +6,9 @@
  * Memory: O(\log N \cdot numUpdates) 
  * Status: Randomized version-history regression test
  */
-
 struct Node {
   int le, ri;
   ll lazy, sum;
-
   Node(int _le = 0, int _ri = 0, ll _lazy = 0, ll _sum = 0) {
     le = _le, ri = _ri, lazy = _lazy, sum = _sum;
   }
@@ -18,28 +16,21 @@ struct Node {
 vector<Node> nodes(1); // Index 0 is the all-zero subtree.
 int numNode = 0;
 vector<int> version;
-
 struct PersistentLazyIT {
   int n;
-
   PersistentLazyIT(int _n = 0) {
     resize(_n);
   }
-
   void resize(int _n) {
     n = _n;
   }
-
   int newlazykid(int oldId, int l, int r, ll val) {
     int id = ++numNode;
     nodes.push_back(nodes[oldId]);
-
     nodes[id].sum += 1ll * val * (r - l + 1);
     nodes[id].lazy += val;
-
     return id;
   }
-
   int newparent(int le, int ri) {
     int id = ++numNode;
     nodes.emplace_back();
@@ -47,7 +38,6 @@ struct PersistentLazyIT {
     nodes[id].sum = nodes[le].sum + nodes[ri].sum;
     return id;
   }
-
   void push(int id, int l, int r) {
     if (nodes[id].lazy == 0) return;
     if (l != r) {
@@ -57,7 +47,6 @@ struct PersistentLazyIT {
     }
     nodes[id].lazy = 0;
   }
-
   int update(int oldId, int l, int r, int u, int v, ll val) {
     if (l > v || r < u) return oldId;
     if (u <= l && r <= v) return newlazykid(oldId, l, r, val);
@@ -67,19 +56,16 @@ struct PersistentLazyIT {
       ri = update(nodes[copy].ri, mid + 1, r, u, v, val);
     return newparent(le, ri);
   }
-
   int update(int root, int u, int v, ll val) {
     assert(n > 0);
     return update(root, 1, n, u, v, val);
   }
-
   ll get(int id, int l, int r, int u, int v, ll carry = 0) {
     if (l > v || r < u) return 0;
     if (u <= l && r <= v) return nodes[id].sum + carry * (r - l + 1);
     carry += nodes[id].lazy; int mid = (l + r) >> 1;
     return get(nodes[id].le, l, mid, u, v, carry) + get(nodes[id].ri, mid + 1, r, u, v, carry);
   }
-
   ll get(int root, int u, int v) {
     assert(n > 0);
     return get(root, 1, n, u, v);

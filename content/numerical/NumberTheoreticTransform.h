@@ -15,8 +15,6 @@
  * Status: stress-tested
  */
 #pragma once
-
-
 const ll mod = (119 << 23) + 1, root = 62; // = 998244353
 ll nttPow(ll a, ll e) {
   ll res = 1;

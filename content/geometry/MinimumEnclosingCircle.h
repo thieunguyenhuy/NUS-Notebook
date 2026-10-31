@@ -8,9 +8,7 @@
  * Status: stress-tested
  */
 #pragma once
-
 #include "circumcircle.h"
-
 pair<P, double> mec(vector<P> ps) {
   shuffle(all(ps), mt19937(time(0)));
   P o = ps[0];

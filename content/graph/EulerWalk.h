@@ -13,7 +13,6 @@
  * Status: stress-tested
  */
 #pragma once
-
 vi eulerWalk(vector<vector<pii>>& gr, int nedges, int src=0) {
   int n = sz(gr);
   vi D(n), its(n), eu(nedges), ret, s = {src};

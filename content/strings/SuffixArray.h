@@ -4,32 +4,26 @@
  * Time: O(N \log^2 N) for construcing suffix array and O(n) for construcing LCP array
  * Status: Tested on judge.yosupo.jp
  */
-
 struct SuffixArray {
   string str;
   vector<int> sa, lcp, order, rank;
   vector<ll> weight;
   int n;
- 
   SuffixArray(string _str = "") {
     str = _str, n = str.size();
     sa.assign(n, 0), lcp.assign(n, 0), order.assign(n, 0);
     rank.assign(n, 0), weight.assign(n, 0);
     getSA(), getLCP();
   }
- 
   void getSA() {
     for (int i = 0; i < n; ++i) {
       sa[i] = i;
       weight[i] = (unsigned char)str[i];
     }
- 
     auto cmp = [&](int x, int y) {
       return weight[x] < weight[y];
     };
- 
     sort (sa.begin(), sa.end(), cmp);
- 
     for (int len = 1; len <= n; len <<= 1) {
       int cnt = 0;
       for (int i = 0; i < n; ++i) {
@@ -46,7 +40,6 @@ struct SuffixArray {
       }
     }
   }
- 
   void getLCP() {
     for (int i = 0; i < n; ++i) rank[sa[i]] = i;
     for (int i = 0, k = 0; i < n; lcp[rank[i++]] = k) {

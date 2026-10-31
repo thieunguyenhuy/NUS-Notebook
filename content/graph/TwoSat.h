@@ -4,25 +4,20 @@
  * Time: O(n + m)
  * Status: Tested by KickingKun
  */
-
 struct TwoSat { // convert vector -> array to get higher speed ....
   int n; vector <int> lab, num, low; vector <vector <int>> adj;
   int timeDfs, scc; stack <int> st;
-  
   TwoSat (int _n) {
     this->n = _n; lab.assign(n * 2 + 1, 0); low.assign(n * 2 + 1, 0);
     num.assign(n * 2 + 1, 0); adj.assign(n * 2 + 1, vector <int>());
     timeDfs = scc = 0; while (!st.empty()) st.pop();
   }
-  
   int NON(int u) {
     return u <= n ? u + n : u - n;
   }
-
   void add(int u, int v) {
     adj[u].emplace_back(v);
   }
-  
   void add_u_or_v(int u, int v) { // u or v = 1
     adj[NON(u)].emplace_back(v); adj[NON(v)].emplace_back(u);
   }
@@ -36,7 +31,6 @@ struct TwoSat { // convert vector -> array to get higher speed ....
   void add_non_equal(int u, int v) { // u != v
     add_u_or_v(u, v); add_u_or_v(NON(u), NON(v));
   }
-  
   void dfs(int u) {
     low[u] = num[u] = ++timeDfs; st.emplace(u);
     for (int v: adj[u]) {
@@ -44,7 +38,6 @@ struct TwoSat { // convert vector -> array to get higher speed ....
       if (!num[v]) dfs(v), low[u] = min(low[u], low[v]);
       else low[u] = min(low[u], num[v]);
     }
-    
     if (low[u] == num[u]) {
       ++scc;
       while (true) {
@@ -53,7 +46,6 @@ struct TwoSat { // convert vector -> array to get higher speed ....
       }
     }
   }
-  
   bool check_exist() {
     for (int i = 1; i <= n; i++) {
       if (!lab[NON(i)]) dfs(NON(i));
@@ -63,7 +55,6 @@ struct TwoSat { // convert vector -> array to get higher speed ....
       if (lab[i] == lab[NON(i)]) return false;
     return true;
   }
-  
   vector <int> get_equation() {
     if (!check_exist()) return {-1};
     vector <int> ans = {0};

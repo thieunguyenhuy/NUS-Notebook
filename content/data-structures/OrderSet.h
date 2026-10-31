@@ -7,7 +7,6 @@
  * Time: O(\log N) for each operation
  * Status: Tested on one problem.
  */
-
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
 template <class T>

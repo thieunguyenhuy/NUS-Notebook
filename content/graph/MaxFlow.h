@@ -5,37 +5,30 @@
  * Time: O(V^2 \cdot E) in worst cases
  * Status: Well-tested
  */
-
 struct Dinic {
   struct Edge {
     int u, v;
     ll capacity, flow = 0;
-   
     Edge(int _u = 0, int _v = 0, ll _capacity = 0) {
       u = _u, v = _v, capacity = _capacity, flow = 0;
     }
   };
-
   const ll FLOW_INF = (ll)2e18;
   vector<Edge> edges;
   vector<vector<int>> adj;
   vector<int> level, ptr;
   int n, m;
-
   Dinic(int n = 0) { resize(n); }
- 
   void resize(int _n) {
     n = _n, m = 0;
     adj.assign(n + 1, vector<int>()), edges.clear();
   }
- 
   int add(int u, int v, ll capacity) {
     edges.emplace_back(u, v, capacity);
     edges.emplace_back(v, u, 0);
     adj[u].emplace_back(m++), adj[v].emplace_back(m++);
     return m - 2;
   }
- 
   ll dfs(int u, int sink, ll pushed) {
     if (u == sink || pushed == 0) return pushed;
     for (int &i = ptr[u]; i < (int)adj[u].size(); ++i) {
@@ -48,7 +41,6 @@ struct Dinic {
     }
     return 0;
   }
- 
   ll maxFlow(int source, int sink) {
     assert(source != sink);
     ll flow = 0;
@@ -67,7 +59,6 @@ struct Dinic {
     } while (level[sink] != 0);
     return flow;
   }
- 
   vector<pii> minCut() { // remember to call maxFlow(source, sink) and be careful of duplicates
     vector<pii> cut;
     for (int id = 0; id < m; id += 2) {

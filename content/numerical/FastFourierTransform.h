@@ -18,7 +18,6 @@
  * here (https://github.com/simonlindholm/fft-precision/blob/master/fft-precision.md)
  */
 #pragma once
-
 typedef complex<double> C;
 typedef vector<double> vd;
 void fft(vector<C>& a) {

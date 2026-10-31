@@ -12,7 +12,6 @@
  */
 #pragma once
 #include "Point.h"
-
 typedef Point<int> P;
 vector<array<int, 3>> manhattanMST(vector<P> ps) {
   vi id(sz(ps));

@@ -8,7 +8,6 @@
  * Status: stress-tested
  */
 #pragma once
-
 set<pii>::iterator addInterval(set<pii>& is, int L, int R) {
   if (L == R) return is.end();
   auto it = is.lower_bound({L, R}), before = it;

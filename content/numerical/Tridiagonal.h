@@ -16,7 +16,6 @@ q_0 & d_1 & p_1 & 0 & \cdots & 0\\
 \end{array}\right)
 \left(\begin{array}{c}x_0\\x_1\\x_2\\x_3\\\vdots\\x_{n-1}\end{array}\right).
 \]
-
 This is useful for solving problems on the type
 \[ a_i=b_ia_{i-1}+c_ia_{i+1}+d_i,\,1\leq i\leq n, \]
 where $a_0$, $a_{n+1}$, $b_i$, $c_i$ and $d_i$ are known. $a$ can then be obtained from
@@ -25,14 +24,12 @@ where $a_0$, $a_{n+1}$, $b_i$, $c_i$ and $d_i$ are known. $a$ can then be obtain
 &\{b_1,b_2,\dots,b_n,0\}, \{a_0,d_1,d_2,\dots,d_n,a_{n+1}\}).
 \end{align*}
 Fails if the solution is not unique.
-
 If $|d_i| > |p_i| + |q_{i-1}|$ for all $i$, or $|d_i| > |p_{i-1}| + |q_i|$, or the matrix is positive definite,
 the algorithm is numerically stable and neither \texttt{tr} nor the check for \texttt{diag[i] == 0} is needed.
  * Time: O(N)
  * Status: Brute-force tested mod 5 and 7 and stress-tested for real matrices obeying the criteria above.
  */
 #pragma once
-
 typedef double T;
 vector<T> tridiagonal(vector<T> diag, const vector<T>& super,
     const vector<T>& sub, vector<T> b) {

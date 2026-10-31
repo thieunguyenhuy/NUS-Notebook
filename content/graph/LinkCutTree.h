@@ -9,7 +9,6 @@
  * Status: Stress-tested a bit for N <= 20
  */
 #pragma once
-
 struct Node { // Splay tree. Root's pp contains tree's parent.
   Node *p = 0, *pp = 0, *c[2];
   bool flip = 0;
@@ -54,11 +53,9 @@ struct Node { // Splay tree. Root's pp contains tree's parent.
     return c[0] ? c[0]->first() : (splay(), this);
   }
 };
-
 struct LinkCut {
   vector<Node> node;
   LinkCut(int N) : node(N) {}
-
   void link(int u, int v) { // add an edge (u, v)
     assert(!connected(u, v));
     makeRoot(&node[u]);

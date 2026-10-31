@@ -16,7 +16,6 @@ namespace MoAlgo{
   void remove(int idx, array<int, 2> &inter); // remove idx
   T_ans calc(array<int, 2> &inter); 
   // compute current answer
-
   pii get_block(pii que){
     if((que.first / blsz) & 1) que.second = -que.second;
     return {que.first / blsz, que.second};   

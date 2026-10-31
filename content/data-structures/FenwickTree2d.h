@@ -31,7 +31,6 @@ struct FT {
     return pos;
   }
 };
-
 struct FT2 {
   vector<vi> ypos; vector<FT> ybit;
   bool call_init = false;

@@ -22,7 +22,6 @@ struct FastSet {
     }
   }
   void init() { fill(a, a + N + 5, 0); }
-
   void update(int x) {
     assert(1 <= x && x <= N);
     //add if x not in set and vice versa
@@ -35,13 +34,11 @@ struct FastSet {
       prev = cur;
     }
   }
-
   int get_next(uint64_t mask, int l) {
     if (l >= BLOCK) return -1;
     mask &= ~uint64_t(0) << l;
     return mask ? __builtin_ctzll(mask) : -1;
   }
-
   int find_next(int x) { // return first ele >= x or -1 if no ele
     int id = x >> 6;
     int foo = get_next(a[id + layer_start[LAYER - 1]], x & (BLOCK - 1));
@@ -63,12 +60,10 @@ struct FastSet {
     }
     return -1;
   }
-
   int get_prev(uint64_t mask, int l) {
     if (l < BLOCK) mask &= (1ULL << l) - 1;
     return mask ? 63 - __builtin_clzll(mask) : -1;
   }
-
   int find_prev(int x) { // return last ele < x or -1 if no ele
     int id = x >> 6;
     int foo = get_prev(a[id + layer_start[LAYER - 1]], x & (BLOCK - 1));
@@ -90,11 +85,9 @@ struct FastSet {
     }
     return -1;
   }
-
   int get_min() {
     return find_next(1);
   }
-
   int get_max() {
     return find_prev(N + 1);
   }

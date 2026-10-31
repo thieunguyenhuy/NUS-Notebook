@@ -10,9 +10,7 @@
  * Time: O(\log(N))
  * Status: stress-tested for n <= 300
  */
-
 struct Frac { ll p, q; };
-
 template<class F>
 Frac fracBS(F f, ll N) {
   bool dir = 1, A = 1, B = 1;

@@ -16,7 +16,6 @@ vector<pt> circleCircle(pt o1, double r1, pt o2, double r2){
   }
   return ans;
 }
-
 vector<pt> circleLine(pt o, double r, line l){
   double h_sq = r * r - line_dist(o, l) * line_dist(o, l);
   vector<pt> ans;
@@ -27,7 +26,6 @@ vector<pt> circleLine(pt o, double r, line l){
   }
   return ans;
 }
-
 /**
  * Author: Victor Lecomte, chilli
  * Date: 2019-10-31
@@ -52,7 +50,6 @@ vector<pair<pt, pt>> tangents(pt o1, double r1, pt o2, double r2) {
   if (h_sq == 0) ans.pop_back();
   return ans;
 }
-
 /**
  * Author: Le Pham Duy Khoa
  * Source: cp-geo
@@ -63,5 +60,3 @@ pt circumCenter(pt a, pt b, pt c) {
   b = b-a, c = c-a; assert(cross(b,c) != 0); //assume points not collinear.
   return a + perp(b * sq_len(c) - c * sq_len(b)) / (cross(b, c) * 2);
 }
-
-

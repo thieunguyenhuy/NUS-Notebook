@@ -1,6 +1,5 @@
 /**
  * Author: Le Pham Duy Khoa
- * Date: 2019-05-05
  * Source: https://codeforces.com/blog/entry/133763
  * Description: Returns the two points with max distance on a polygon.
  * If polygon is convex then no need to include ConvexHull.h.

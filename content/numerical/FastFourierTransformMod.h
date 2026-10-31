@@ -5,36 +5,28 @@
  * Time: O(N \log N) where N is the total sizes of two polynomials
  * Status: Well-tested
  */
-
 namespace FFT {
   using ld = long double;
   const int MOD = 1000000007; // Set to the required modulus.
   const ld pi = atan2(1, 1) * 4;
- 
   struct cmplx {
     ld a, b;
- 
     cmplx() {
       a = 0, b = 0;
     }
- 
     cmplx(ld a1, ld b1) {
       a = a1, b = b1;
     }
   };
- 
   inline cmplx sum(cmplx& c1, cmplx& c2) {
     return {c1.a + c2.a, c1.b + c2.b};
   }
- 
   inline cmplx sub(cmplx& c1, cmplx& c2) {
     return {c1.a - c2.a, c1.b - c2.b};
   }
- 
   inline cmplx mult(cmplx& c1, cmplx& c2) {
     return {c1.a * c2.a - c1.b * c2.b, c1.a * c2.b + c1.b * c2.a};
   }
- 
   void fft(vector<cmplx> &a, int n) {
     for (int i = 1, j = 0; i < n; ++i) {
       int bit = n >> 1;
@@ -56,7 +48,6 @@ namespace FFT {
       }
     }
   }
- 
   vector<int> multiply(vector<int> &s, vector<int> &t) {
     if (s.empty() || t.empty()) return {};
     int need = (int) s.size() + t.size() - 1, sz = 1;
@@ -73,10 +64,8 @@ namespace FFT {
     for (int i = 0; i < sz; ++i) {
       a[i] = mult(a[i], b[i]);
     }
- 
     fft(a, sz);
     reverse(a.begin() + 1, a.end());
- 
     vector<int> ans(need);
     for (int i = 0; i < need; ++i) ans[i] = (llround(a[i].a / sz) % MOD + MOD) % MOD;
     return ans;

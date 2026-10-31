@@ -8,7 +8,6 @@
  * Time: O(n)
  * Status: stress-tested
  */
-
 struct SuffixAutomaton{
   struct Node{
     int len, link = -1, nxt[26];

@@ -6,7 +6,6 @@
  * Description: Builds palindromic tree for a string.
  * Status: stress-tested
  */
-
 namespace PalindromicTree {
 const int N = 100000 + 5, sigma = 26;
 int s[N], len[N], link[N], to[N][sigma], n, last, sz;

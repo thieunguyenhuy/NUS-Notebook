@@ -5,29 +5,23 @@
  * Time: O(len(s)) for addition, O(total_len) for build(), O(len(x)) or O(num of occurences) for query()
  * Status: Tested on some problems
  */
-
 struct AhoCorasick {
   static const int SIZE = 26;
   static const char START_CHAR = 'a';
-
   struct Node {
     int fail, link;
     int child[SIZE], nxt[SIZE];
     int output;
-
     Node() {
       fail = 0, link = -1, output = 0;
       memset(child, -1, sizeof child);
       memset(nxt, -1, sizeof nxt);
     }
   };
-
   vector<Node> nodes;
-
   void init() {
     nodes.clear(), nodes.emplace_back(Node());
   }
-
   void add(string &s, int id) {
     int v = 0;
     for (char ch : s) {
@@ -40,16 +34,13 @@ struct AhoCorasick {
     }
     ++nodes[v].output;
   }
-
   void build() {
     nodes[0].fail = nodes[0].link = 0;
     for (int i = 0; i < SIZE; ++i)
       nodes[0].nxt[i] = (nodes[0].child[i] == -1 ? 0 : nodes[0].child[i]);
-  
     queue<int> q; q.emplace(0);
     while (!q.empty()) {
       int u = q.front(); q.pop();
- 
       for (int c = 0; c < SIZE; ++c) if (nodes[u].child[c] != -1) {
         int v = nodes[u].child[c];
         nodes[v].fail = (u == 0 ? 0 : nodes[nodes[u].fail].nxt[c]);
@@ -61,7 +52,6 @@ struct AhoCorasick {
       }
     }
   }
-
   int query(string &x) {
     int ans = 0, p = 0;
     for (auto ch : x) {

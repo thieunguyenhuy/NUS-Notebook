@@ -47,10 +47,8 @@
  *   from S < 2c and S = x^2 (mod c) together implying S < c + i^2.)
  */
 #pragma once
-
 #include "ModMul.h"
 #include "MillerRabin.h"
-
 ull pollard(ull n) {
   ull x = 0, y = 0, t = 30, prd = 2, i = 1, q;
   auto f = [&](ull x) { return modmul(x, x, n) + i; };

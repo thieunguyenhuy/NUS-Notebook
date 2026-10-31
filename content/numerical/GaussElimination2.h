@@ -5,22 +5,18 @@
  * Time: O(\frac{min(N, M) \cdot N \cdot M}{64}) where N = equations, M = variables
  * Status: Tested on judge.yosupo.jp
  */
-
 namespace Gauss {
   // n: num equations, m: num variables
   // left hand side: [0, m-1], right hand side: column m
   const int M = 4096 + 5;
   using T = bitset<M>;
-
   int n, m;
   int where[M];
   vector<T> a;
   T ans;
-
   void init(int _n, int _m, const vector<T> &_a) {
     n = _n, m = _m, a = _a;
   }
-
   int gauss() {
     ans.reset();
     for (int i = 0; i < m; ++i) where[i] = -1;
@@ -36,11 +32,9 @@ namespace Gauss {
         if (i != row && a[i][col]) a[i] ^= a[row];
       ++row;
     }
-
     for (int i = 0; i < m; ++i) if (where[i] != -1) {
       ans[i] = a[where[i]][m];
     }
-
     for (int i = 0; i < n; ++i) {
       bool sum = 0;
       for (int j = 0; j < m; ++j) sum ^= ans[j] & a[i][j];
@@ -48,7 +42,6 @@ namespace Gauss {
     }
     return row;
   }
-
   vector<T> get_basis() { // assume gauss() has been called
     vector<T> basis;
     for (int i = 0; i < m; ++i) if (where[i] == -1) {

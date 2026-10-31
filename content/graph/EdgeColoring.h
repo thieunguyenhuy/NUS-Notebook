@@ -12,7 +12,6 @@
  * Status: stress-tested, tested on kattis:gamescheduling
  */
 #pragma once
-
 vi edgeColoring(int N, vector<pii> eds) {
   vi cc(N + 1), ret(sz(eds)), fan(N), free(N), loc;
   for (pii e : eds) ++cc[e.first], ++cc[e.second];

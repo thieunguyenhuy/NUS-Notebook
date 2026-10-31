@@ -13,11 +13,9 @@
  * Status: stress-tested and tested on kattis:pointinpolygon
  */
 #pragma once
-
 #include "Point.h"
 #include "OnSegment.h"
 #include "SegmentDistance.h"
-
 template<class P>
 bool inPolygon(vector<P> &p, P a, bool strict = true) {
   int cnt = 0, n = sz(p);

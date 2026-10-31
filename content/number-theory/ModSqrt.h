@@ -8,7 +8,6 @@
  * Status: Tested for all a,p <= 10000
  */
 #pragma once
-
 namespace mod_sqrt_detail {
 ll power(ll a, ll e, ll p) {
   ll res = 1;
@@ -17,7 +16,6 @@ ll power(ll a, ll e, ll p) {
   return res;
 }
 }
-
 ll sqrt(ll a, ll p) {
   a %= p; if (a < 0) a += p;
   if (p == 2) return a;

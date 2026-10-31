@@ -7,7 +7,6 @@
  * Status: Stress-tested
  */
 #pragma once
-
 array<vi, 2> manacher(const string& s) {
   int n = sz(s);
   array<vi,2> p = {vi(n+1), vi(n)};

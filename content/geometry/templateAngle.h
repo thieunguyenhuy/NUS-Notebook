@@ -24,7 +24,6 @@ bool operator<(angle a, angle b){
     make_tuple(b.t, b.half(), cross(a.p, b.p));
 }
 //EOF File: Angle.h
-
 //Find smallest angle between a.p and b.p
 pair<angle, angle> segment_angle(pt p, pt q){
   angle a = angle(p), b = angle(q);

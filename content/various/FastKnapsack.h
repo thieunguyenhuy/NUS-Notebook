@@ -8,7 +8,6 @@
  * Status: Tested on kattis:eavesdropperevasion, stress-tested
  */
 #pragma once
-
 int knapsack(vi w, int t) {
   int a = 0, b = 0, x;
   while (b < sz(w) && a + w[b] <= t) a += w[b++];

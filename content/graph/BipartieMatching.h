@@ -4,21 +4,17 @@
  * Time: O(E \cdot \sqrt{V})
  * Status: approved by KickingKun
 */
-
 struct bipartite_matching {
   const int n, m;
   vector <int> match1, match2, que, dist;
   vector <vector<int>> adj;
-
   bipartite_matching(int _n, int _m) : n(_n), m(_m) {
     match1.assign(n + 1, -1); match2.assign(m + 1, -1);
     que.assign(n + 1, 0); dist.assign(n + 1, 0); adj.assign(n + 1, vector <int>());
   }
-
   void add(int u, int v) {
     adj[u].emplace_back(v);
   }
-
   bool bfs() {
     fill(dist.begin(), dist.end(), -1);
     int queBegin = 1, queEnd = 1;
@@ -40,7 +36,6 @@ struct bipartite_matching {
     }
     return success;
   }
-
   bool dfs(int u) {
     for (int v : adj[u]) {
       if (match2[v] == -1 || (dist[match2[v]] == dist[u] + 1 && dfs(match2[v]))) {
@@ -51,7 +46,6 @@ struct bipartite_matching {
     dist[u] = n + m;
     return false;
   }
-  
   int max_matching() {
     while (bfs()) {
       for (int u = 1; u <= n; ++u) {
@@ -60,7 +54,6 @@ struct bipartite_matching {
     }
     return n - count(match1.begin() + 1, match1.end(), -1);
   }
-  
   pair <vector <int>, vector <int>> minimum_vertex_cover() {
     vector <int> L, R;
     for (int u = 1; u <= n; ++u) {
@@ -69,7 +62,6 @@ struct bipartite_matching {
     }
     return {L, R};
   }
-  
   pair <vector <int>, vector <int>> maximum_independent_set() {
     auto [_L, _R] = minimum_vertex_cover();
     vector <int> L, R;
@@ -79,7 +71,6 @@ struct bipartite_matching {
     for (int u = 1; u <= m; u++) if (!mark2[u]) R.emplace_back(u);
     return {L, R};
   }
-
   vector <pii> get_edges() { // get from max matching
     vector <pii> ans;
     for (int u = 1; u <= n; ++u)

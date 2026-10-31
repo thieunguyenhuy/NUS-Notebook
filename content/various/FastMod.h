@@ -5,7 +5,6 @@
  * Returns a value congruent to $a \pmod b$ in the range $[0, 2b)$.
  * Status: proven correct, stress-tested
  */
-
 struct FastMod {
   uint64_t b, m;
   FastMod(uint64_t b) : b(b), m(-1ULL / b) {}

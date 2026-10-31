@@ -4,40 +4,32 @@
  * Time: O(1) for addition and O(1) or O(\log N) for query
  * Status: Well-tested
  */
-
 // Adding decreasing slopes, query min
 // Use get() if query increasing, query() otherwise
 struct ConvexHullTrick {
   const ll INF = 1e18;
   struct Line {
     ll m, b;
-
     Line(ll _m = 0, ll _b = 0) {
       m = _m, b = _b;
     }
-
     ll eval(ll x) {
       return m * x + b;
     }
   };
-
   bool isBad(Line l1, Line l2, Line l3) {
     // bad when x of (l1 x l3) < x of (l1 x l2)
     return ((__int128)l3.b - l1.b) * ((__int128)l1.m - l2.m)
        <= ((__int128)l2.b - l1.b) * ((__int128)l1.m - l3.m);
   }
-
   vector<Line> lines;
   int pointer = 0;
-
   ConvexHullTrick() {
     lines.clear(), pointer = 0;
   }
-
   void reset() {
     lines.clear(), pointer = 0;
   }
-
   void add(ll m, ll b) { // insert line decreasing in slope
     while (!lines.empty() && lines.back().m == m && lines.back().b > b)
       lines.pop_back();
@@ -47,7 +39,6 @@ struct ConvexHullTrick {
       lines.pop_back();
     lines.emplace_back(newLine);
   }
-
   ll query(ll x) { // return min
     if (lines.empty()) return INF;
     if (lines.size() == 1) return lines[0].eval(x);
@@ -59,7 +50,6 @@ struct ConvexHullTrick {
     }
     return lines[best + 1].eval(x);
   }
-
   ll get(ll x) { //answer query increasing in x
     if (lines.empty()) return INF;
     if (pointer >= lines.size()) pointer = lines.size() - 1;

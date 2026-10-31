@@ -9,7 +9,6 @@
  * Status: Tested on kattis:stringmatching
  */
 #pragma once
-
 vi pi(const string& s) {
   vi p(sz(s));
   rep(i,1,sz(s)) {
@@ -19,7 +18,6 @@ vi pi(const string& s) {
   }
   return p;
 }
-
 vi match(const string& s, const string& pat) {
   vi p = pi(pat + '\0' + s), res;
   rep(i,sz(p)-sz(s),sz(p))

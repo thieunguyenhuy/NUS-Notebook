@@ -8,7 +8,6 @@
  * Status: Tested
  */
 #pragma once
-
 const int MAX_PR = 5'000'000;
 bitset<MAX_PR> isprime;
 vi eratosthenesSieve(int lim) {

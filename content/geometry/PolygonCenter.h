@@ -8,9 +8,7 @@
  * Status: Tested
  */
 #pragma once
-
 #include "Point.h"
-
 typedef Point<double> P;
 P polygonCenter(const vector<P>& v) {
   P res(0, 0); double A = 0;

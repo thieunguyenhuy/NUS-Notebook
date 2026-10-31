@@ -13,7 +13,6 @@
  * Status: works
  */
 #pragma once
-
 bool find(int j, vector<vi>& g, vi& btoa, vi& vis) {
   if (btoa[j] == -1) return 1;
   vis[j] = 1; int di = btoa[j];

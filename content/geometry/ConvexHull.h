@@ -1,29 +1,27 @@
 /**
- * Author: Stjepan Glavina, chilli
- * Date: 2019-05-05
- * License: Unlicense
- * Source: https://github.com/stjepang/snippets/blob/master/convex_hull.cpp
- * Description:
-Returns a vector of the points of the convex hull in counter-clockwise order.
-Points on the edge of the hull between two other points are not considered part of the hull.
-\kactlillustration{content/geometry/ConvexHull.pdf}
+ * Author: Le Pham Duy Khoa
+ * Description: Returns the convex hull given set of points v in ccw order.
+ * Works when geo\_T = ll;
  * Time: O(n \log n)
- * Status: stress-tested, tested with kattis:convexhull
 */
-#pragma once
-
-#include "Point.h"
-
-typedef Point<ll> P;
-vector<P> convexHull(vector<P> pts) {
-  if (sz(pts) <= 1) return pts;
-  sort(all(pts));
-  vector<P> h(sz(pts)+1);
-  int s = 0, t = 0;
-  for (int it = 2; it--; s = --t, reverse(all(pts)))
-    for (P p : pts) {
-      while (t >= s + 2 && h[t-2].cross(h[t-1], p) <= 0) t--;
-      h[t++] = p;
+#include "templatePoint.h"
+vector<pt> convex_hull(vector<pt> v){
+  if(v.size() <= 1) return v;
+  auto cmp = [&](pt &a, pt &b){ return tie(a.x, a.y) < tie(b.x, b.y);};
+  sort(v.begin(), v.end(), cmp);
+  vector<pt> st; st.reserve(v.size() + 5);
+  int s = 0;
+  for(int _ = 0; _ < 2; _++){
+    for(pt p: v){
+      while(st.size() >= s + 2){
+        pt a = st[st.size() - 2];
+        if(cross(st.back() - a, p - a) <= 0) st.pop_back();
+        else break;
+      }
+      st.push_back(p);
     }
-  return {h.begin(), h.begin() + t - (t == 2 && h[0] == h[1])};
+    reverse(v.begin(), v.end()); st.pop_back(); s = st.size();
+  }
+  if(st.size() == 2 && st[0] == st[1]) st.pop_back();
+  return st;
 }

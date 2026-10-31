@@ -1,25 +1,32 @@
 /**
- * Author: Oleksandr Bacherikov, chilli
+ * Author: Le Pham Duy Khoa
  * Date: 2019-05-05
- * License: Boost Software License
- * Source: https://codeforces.com/blog/entry/48868
- * Description: Returns the two points with max distance on a convex hull (ccw,
- * no duplicate/collinear points).
- * Status: stress-tested, tested on kattis:roberthood
+ * Source: https://codeforces.com/blog/entry/133763
+ * Description: Returns the two points with max distance on a polygon.
+ * If polygon is convex then no need to include ConvexHull.h.
  * Time: O(n)
  */
-#pragma once
-#include "Point.h"
-
-typedef Point<ll> P;
-array<P, 2> hullDiameter(vector<P> S) {
-  int n = sz(S), j = n < 2 ? 0 : 1;
-  pair<ll, array<P, 2>> res({0, {S[0], S[0]}});
-  rep(i,0,j)
-    for (;; j = (j + 1) % n) {
-      res = max(res, {(S[i] - S[j]).dist2(), {S[i], S[j]}});
-      if ((S[(j + 1) % n] - S[j]).cross(S[i + 1] - S[i]) >= 0)
-        break;
+#include "templatePoint.h"
+#include "ConvexHull.h"
+pair<pt, pt> hull_diameter(vector<pt> v, bool convex=true){
+  if(!convex) v = convex_hull(v);
+  int n = v.size(), ptr = 0; pair<pt, pt> ans = {v[0], v[0]};
+  if(n == 1) return {v[0], v[0]};
+  else if(n == 2) return {v[0], v[1]};
+  auto upd = [&](pt &x, pt &y){ 
+    if(sq_len(x - y) > sq_len(ans.fi - ans.se)) ans = {x, y};
+  };
+  for(int i = 0; i < n; i++){
+    pt dir = v[(i + 1) % n] - v[i];
+    for(;;ptr = (ptr + 1) % n){
+      int p1 = sign(cross(dir, v[ptr] - v[(ptr + n - 1) % n]));
+      int p2 = sign(cross(dir, v[(ptr + 1) % n] - v[ptr]));
+      if(ptr != i && ptr != (i + 1) % n && p1 != p2) break;
     }
-  return res.second;
+    upd(v[i], v[ptr]), upd(v[(i + 1) % n], v[ptr]);
+    if(cross(dir, v[(ptr + 1) % n]) == 0){
+      upd(v[i], v[(ptr + 1) % n]), upd(v[(i + 1) % n], v[(ptr + 1) % n]);
+    }
+  }
+  return ans;
 }

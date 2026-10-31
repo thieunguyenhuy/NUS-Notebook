@@ -1,30 +1,8 @@
 /**
- * Author: Simon Lindholm
- * Date: 2019-04-17
- * License: CC0
+ * Author: Le Pham Duy Khoa
  * Source: https://codeforces.com/blog/entry/58747
- * Description: Finds the closest pair of points.
+ * Description: Finds the closest pair of points. In order to do so, 
+ * sort points by x, sweep line. Denote current min as d.
+ * Check all the points in rectangle (x - d, y - d); (x, y + d), there are at most 8 points.
  * Time: O(n \log n)
- * Status: stress-tested
  */
-#pragma once
-
-#include "Point.h"
-
-typedef Point<ll> P;
-pair<P, P> closest(vector<P> v) {
-  assert(sz(v) > 1);
-  set<P> S;
-  sort(all(v), [](P a, P b) { return a.y < b.y; });
-  pair<ll, pair<P, P>> ret{LLONG_MAX, {P(), P()}};
-  int j = 0;
-  for (P p : v) {
-    P d{1 + (ll)sqrt(ret.first), 0};
-    while (v[j].y <= p.y - d.x) S.erase(v[j++]);
-    auto lo = S.lower_bound(p - d), hi = S.upper_bound(p + d);
-    for (; lo != hi; ++lo)
-      ret = min(ret, {(*lo - p).dist2(), {*lo, p}});
-    S.insert(p);
-  }
-  return ret.second;
-}

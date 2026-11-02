@@ -1,29 +1,26 @@
 /**
- * Author: chilli
- * Date: 2019-05-17
- * License: CC0
+ * Author: Le Pham Duy Khoa
  * Source: https://github.com/ngthanhtrung23/ACM_Notebook_new
- * Description: Determine whether a point t lies inside a convex hull (CCW
- * order, with no collinear points). Returns true if point lies within
- * the hull. If strict is true, points on the boundary aren't included.
- * Usage:
- * Status: stress-tested
- * Time: O(\log N)
+ * Description: Determine whether a point t lies inside a convex 
+ * polygon with no collinear points. The polygon can be in ccw or cw order. 
+ * If strict is true, points on the boundary aren't included.
+ * If v.size() >= 3, then no need to include TemplateSegment.h
+ * Status: Tested on Atcoder
+ * Time: $O(\log N)$
  */
 #pragma once
-#include "Point.h"
-#include "sideOf.h"
-#include "OnSegment.h"
-typedef Point<ll> P;
-bool inHull(const vector<P>& l, P p, bool strict = true) {
-  int a = 1, b = sz(l) - 1, r = !strict;
-  if (sz(l) < 3) return r && onSegment(l[0], l.back(), p);
-  if (sideOf(l[0], l[a], l[b]) > 0) swap(a, b);
-  if (sideOf(l[0], l[a], p) >= r || sideOf(l[0], l[b], p)<= -r)
-    return false;
-  while (abs(a - b) > 1) {
-    int c = (a + b) / 2;
-    (sideOf(l[0], l[c], p) > 0 ? b : a) = c;
+#include "TemplatePoint.h"
+#include "TemplateSegment.h"
+bool in_convex_poly(vector<pt> &v, pt p, bool strict=false){
+  int low = 1, high = v.size() - 1, r = !strict, n = v.size();
+  if(n <= 2) return r && on_seg(p, {v[0], v[1 % n]});
+  if(cross(v[1] - v[0], v[n - 1] - v[0]) < 0) swap(low, high); 
+  if(sign(cross(p - v[0], v[high] - v[0])) <= -r) return false;
+  if(sign(cross(p - v[0], v[low] - v[0])) >= r) return false;
+  while(abs(high - low) > 1){
+    int mid = ((low + high) >> 1);
+    if(sign(cross(v[mid] - v[0], p - v[0])) == 1) low = mid;
+    else high = mid;
   }
-  return sgn(l[a].cross(l[b], p)) < r;
+  return (cross(v[high] - v[low], p - v[low]) > -r);
 }

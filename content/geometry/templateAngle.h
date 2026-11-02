@@ -10,6 +10,8 @@
  * Works with geo\_T = ll;
  */
 //assumes x^2 + y^2 > 0
+#pragma once
+#include "TemplatePoint.h"
 struct angle{
   pt p; int t;
   angle(pt p, int t=0): p(p), t(t) {}

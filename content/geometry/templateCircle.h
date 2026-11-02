@@ -2,7 +2,10 @@
  * Author: Le Pham Duy Khoa
  * Description: Circle geometry algorithms.
  */
-vector<pt> circleCircle(pt o1, double r1, pt o2, double r2){
+#pragma once
+#include "TemplatePoint.h"
+#include "TemplateLine.h"
+vector<pt> circle_circle_inter(pt o1, double r1, pt o2, double r2){
   double d_sq = sq_len(o2 - o1);
   if(d_sq == 0) return {}; //assume different circles
   double mido1_mul_d = (d_sq + r1 * r1 - r2 * r2) / 2;
@@ -16,7 +19,7 @@ vector<pt> circleCircle(pt o1, double r1, pt o2, double r2){
   }
   return ans;
 }
-vector<pt> circleLine(pt o, double r, line l){
+vector<pt> circle_line_inter(pt o, double r, line l){
   double h_sq = r * r - line_dist(o, l) * line_dist(o, l);
   vector<pt> ans;
   if(h_sq >= 0){

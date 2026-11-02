@@ -4,7 +4,8 @@
  * Works when geo\_T = ll;
  * Time: O(n \log n)
 */
-#include "templatePoint.h"
+#pragma once
+#include "TemplatePoint.h"
 vector<pt> convex_hull(vector<pt> v){
   if(v.size() <= 1) return v;
   auto cmp = [&](pt &a, pt &b){ return tie(a.x, a.y) < tie(b.x, b.y);};

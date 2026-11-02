@@ -1,4 +1,4 @@
-﻿# Blank lines removed before rebuild
+# Blank lines removed before rebuild
 # Format: relative-file:original-line-number
 # Restore by inserting one blank line at each recorded original line, descending per file.
 
@@ -90,15 +90,15 @@ content/geometry/PolygonCenter.h:11
 content/geometry/PolygonCenter.h:13
 content/geometry/PolygonCut.h:15
 content/geometry/PolygonCut.h:17
-content/geometry/templateAngle.h:27
-content/geometry/templateCircle.h:19
-content/geometry/templateCircle.h:30
-content/geometry/templateCircle.h:55
-content/geometry/templateCircle.h:66
-content/geometry/templateCircle.h:67
-content/geometry/templateLine.h:29
-content/geometry/templatePoint.h:12
-content/geometry/templatePoint.h:23
+content/geometry/TemplateAngle.h:27
+content/geometry/TemplateCircle.h:19
+content/geometry/TemplateCircle.h:30
+content/geometry/TemplateCircle.h:55
+content/geometry/TemplateCircle.h:66
+content/geometry/TemplateCircle.h:67
+content/geometry/TemplateLine.h:29
+content/geometry/TemplatePoint.h:12
+content/geometry/TemplatePoint.h:23
 content/graph/BiconnectedComponents.h:21
 content/graph/BiconnectedComponents.h:48
 content/graph/BipartieMatching.h:7

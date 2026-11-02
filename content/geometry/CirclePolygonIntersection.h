@@ -8,7 +8,8 @@
  * Time: O(n)
  * Status: Tested on one problem, stress-tested.
  */
-#include "templatePoint.h"
+#pragma once
+#include "TemplatePoint.h"
 double circlePoly(pt c, double r, vector<pt> ps) {
   auto arg = [](pt p, pt q) { return atan2(cross(p, q), dot(p, q)); };
   auto tri = [&](pt p, pt q) {

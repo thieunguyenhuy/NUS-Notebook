@@ -1,26 +1,27 @@
 /**
- * Author: Andrew He, chilli
- * Date: 2019-05-07
- * License: CC0
- * Source: folklore
+ * Author: Le Pham Duy Khoa
  * Description: Computes the minimum circle that encloses a set of points.
+ * The code has lots of precision problems, so please use long double instead of double.
  * Time: expected O(n)
- * Status: stress-tested
+ * Status: Tested on library checker (with long double instead).
  */
 #pragma once
-#include "circumcircle.h"
-pair<P, double> mec(vector<P> ps) {
-  shuffle(all(ps), mt19937(time(0)));
-  P o = ps[0];
-  double r = 0, EPS = 1 + 1e-8;
-  rep(i,0,sz(ps)) if ((o - ps[i]).dist() > r * EPS) {
-    o = ps[i], r = 0;
-    rep(j,0,i) if ((o - ps[j]).dist() > r * EPS) {
-      o = (ps[i] + ps[j]) / 2;
-      r = (o - ps[i]).dist();
-      rep(k,0,j) if ((o - ps[k]).dist() > r * EPS) {
-        o = ccCenter(ps[i], ps[j], ps[k]);
-        r = (o - ps[i]).dist();
+const double EPS = 1e-10;
+mt19937 rng(6736);
+#include "TemplatePoint.h"
+#include "TemplateCircle.h"
+pair<pt, double> min_enclosing_circle(vector<pt> v){
+  shuffle(v.begin(), v.end(), rng);
+  pt o = v[0]; double r = 0;
+  for(int i = 0; i < v.size(); i++){
+    if(r * r - sq_len(v[i] - o) >= -EPS) continue;
+    o = v[i], r = 0;
+    for(int j = 0; j < i; j++){
+      if(r * r - sq_len(v[j] - o) >= -EPS) continue;
+      o = (v[i] + v[j]) / 2.0; r = len(v[i] - o);
+      for(int k = 0; k < j; k++){
+        if(r * r - sq_len(v[k] - o) >= -EPS) continue;
+        o = circumCenter(v[i], v[j], v[k]); r = len(v[i] - o);
       }
     }
   }

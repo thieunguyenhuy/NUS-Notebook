@@ -2,6 +2,9 @@
  * Author: Le Pham Duy Khoa
  * Description: Segment algorithms.
  */
+#pragma once
+#include "TemplatePoint.h"
+#include "TemplateLine.h"
 //works for geo_T = ll;
 bool on_seg(pt p, pair<pt, pt> s){
   return cross(p - s.fi, s.se - s.fi) == 0 && dot(p - s.fi, p - s.se) <= 0;

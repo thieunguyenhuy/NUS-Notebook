@@ -5,7 +5,8 @@
  * If polygon is convex then no need to include ConvexHull.h.
  * Time: O(n)
  */
-#include "templatePoint.h"
+#pragma once
+#include "TemplatePoint.h"
 #include "ConvexHull.h"
 pair<pt, pt> hull_diameter(vector<pt> v, bool convex=true){
   if(!convex) v = convex_hull(v);

@@ -6,6 +6,8 @@
  * Works for geo\_T = ll;
  */
 //assume v is nonzero.
+#pragma once
+#include "TemplatePoint.h"
 struct line{
   pt v; geo_T c;
   line() {}

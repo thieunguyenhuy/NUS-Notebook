@@ -1,0 +1,16 @@
+Define $s_f(n) = \displaystyle \sum_{i = 1}^n f(i)$
+and $(f * g)(n) = \displaystyle \sum_{d \mid x} f(d)g(\frac{x}{d})$ (Dirichlet Convolution). Then, the following holds:
+
+\begin{itemize}
+    \item $\displaystyle
+            s_{f*g}(n) = \sum_{i=1}^{n} \sum_{d \mid i} g(d)f\left(\frac{i}{d}\right) = \sum_{d=1}^{n} \sum_{p=1}^{\left\lfloor \frac{n}{d} \right\rfloor} g(d)f(p)$
+
+    \item $\displaystyle
+            s_{f*g}(n) = g(1)\sum_{p=1}^{n}f(p) + \sum_{d=2}^{n}\sum_{p=1}^{\left\lfloor \frac{n}{d} \right\rfloor}g(d)f(p)$
+
+    \item $\displaystyle
+            s_{f*g}(n) = g(1)s_f(n) + \sum_{d=2}^{n}g(d)s_f\left(\left\lfloor \frac{n}{d} \right\rfloor\right)$
+
+    \item $\displaystyle
+            s_f(n) = \frac{s_{f*g}(n) - \sum_{d=2}^{n}s_f\left(\left\lfloor \frac{n}{d} \right\rfloor\right)g(d)}{g(1)}$
+\end{itemize}

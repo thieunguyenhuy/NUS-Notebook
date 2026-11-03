@@ -1,0 +1,30 @@
+Denote $C_n$ as these equivalent definitions:
+\begin{itemize}
+        \item No. of regular bracket sequences of length $2n$,
+
+        \item No. of rooted unlabeled binary trees with $n+1$ leaves,
+
+        \item No. of paths from $(0, 0)$ to $(n, n)$ that never goes above the line $x = y$.
+
+        \item No. of ways to triangulate a convex polygon with $n+2$ sides.
+
+        \item No. of binary search trees that can be constructed with $n$ distinct keys.
+
+        \item No. of unlabeled, ordered trees with $n + 1$ vertices.
+
+        \item No. of permutations of length $n$ such that the LIS is at most $2$.
+\end{itemize}
+
+Formulas to calculate $C_n$:
+\begin{itemize}
+        \item $\displaystyle 
+                        C_n = \frac{1}{n+1} \ C(n, 2n) \quad \forall n \ge 0.$
+
+        \item $\displaystyle 
+                        C_n = C(n, 2n) - C(n + 1, 2n) \quad \forall n \ge 0.$
+
+        \item $\displaystyle 
+                        C_{n+1} = \sum_{i=0}^{n} C_i \, C_{n-i} \quad \forall n \ge 0.$
+\end{itemize}
+
+$C_0,C_1,\dotsc$ is: $1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, \dotsc$

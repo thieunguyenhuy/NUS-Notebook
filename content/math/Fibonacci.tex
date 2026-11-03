@@ -1,0 +1,17 @@
+Denote sequence $F_n$ as: $F_0 = 0, F_1 = 1,$
+$F_n = F_{n - 1} + F_{n - 2} \quad \forall n \ge 2$. Some properties below:
+
+\begin{itemize}
+    \item $\displaystyle 
+            F_n = \frac{\phi^n - \psi^n}{\sqrt{5}}$,
+    where \(\phi = \frac{1 + \sqrt{5}}{2}\), \(\psi = \frac{1 - \sqrt{5}}{2}\)
+
+    \item $F_{n - 1}F_{n + 1} - F_n^2 = (-1)^n$.
+
+    \item $F_{n + k} = F_kF_{n + 1} + F_{k-1}F_n$. For $k=n$: $F_{2n} = F_n(F_{n + 1} + F_{n - 1})$
+
+    \item $F_n \mid F_m \leftrightarrow n \mid m \quad \forall n \geq 3$.
+        , $\gcd(F_m, F_n) = F_{\gcd(m, n)}.$
+
+    \item $F_{n+2}$ equals no. of ways to choose zero or more positions in $\{1, 2, \dotsc, n\}$ s/t no two chosen positions are consecutive.
+\end{itemize}

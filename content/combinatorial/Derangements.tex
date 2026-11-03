@@ -1,0 +1,10 @@
+$f(n)$ is no. of permutations $p_1,\dotsc,p_n$ s/t $p_i \neq i \quad \forall i \in [1, n]$. 
+Base cases are $f(0) = 1, f(1) = 0$. Formulas below:
+
+\begin{itemize}
+    \item $f(n) = (n - 1)(f(n - 1) + f(n - 2)) \quad \forall n \geq 2$.
+    
+    \item $f(n) = n f(n - 1) + (-1)^n \quad \forall n \geq 1$.
+    
+    \item $\displaystyle f(n) = n! \sum^n_{k = 0} \frac{(-1)^k}{k!} \quad \forall n \geq 0$.
+\end{itemize}

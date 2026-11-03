@@ -1,0 +1,9 @@
+Denote \(S(n, k)\) as no. of ways to partition the set $1, 2, \dotsc, n$ into $k$ non-empty, unlabeled subsets. Formulas below:
+\begin{itemize}
+    \item Base cases: $S(0, 0) = 1, S(n, 0) = 0 \quad \forall n > 0$.
+
+    \item $S(n, k) = k \cdot S(n - 1, k) + S(n - 1, k - 1) \quad \forall k > 0.$
+
+    \item $\displaystyle 
+            S(n, k) = \frac{1}{k!} \sum_{i=0}^{k} (-1)^{k - i} \cdot C^i_k \cdot i^n.$
+\end{itemize}

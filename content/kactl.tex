@@ -2,7 +2,9 @@
 \usepackage{kactlpkg}
 \usepackage{needspace}
 \usepackage{etoolbox}
-\pretocmd{\section}{\needspace{5\baselineskip}}{}{}
+% Keep section headings with a little following content without wasting
+% most of the remaining column in multicols.
+\pretocmd{\section}{\needspace{2\baselineskip}}{}{}
 \kactlcontentdir{content}
 
 \university{Just lean on the meme}{National University of Singapore}{logo_nus}
@@ -19,7 +21,7 @@
 	\raggedcolumns
 	\thispagestyle{fancy}
 	% Table of contents, without subsections:
-	% \setcounter{tocdepth}{0}
+	\setcounter{tocdepth}{0}
 	\tableofcontents
 	\kactlchapter{contest}
 	\kactlchapter{math}

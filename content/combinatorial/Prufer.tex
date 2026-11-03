@@ -1,0 +1,17 @@
+Prufer code is a bijection $f$ from an unrooted, labeled tree with $n$ vertices $(n \geq 2)$ to
+an array of $n - 2$ integers, where each integer is in the range $[0, n - 1]$.
+
+For a tree $T$ with degrees $d_0,\dotsc,d_{n - 1}$, the number of times 
+$x$ appears in $f(T)$ is exactly $d_x - 1 \ \forall x \in [0, n - 1]$.
+
+Some nice formulas derived from Prufer Code: (Assume all trees are labeled and unrooted)
+\begin{itemize}
+    \item No. of trees of $n$ vertices is $n^{n - 2}$
+    
+    \item If there are $k$ trees, each with $n_1,\dotsc,n_k$ vertices
+    then no. of trees with $n = n_1 + \dotsc + n_k$ made by connecting the $k$ trees
+    is $n_1 n_2 \dotsc n_k n^{k - 2}$.
+    
+    \item No. of trees of $n$ vertices s/t it has degrees $d_0,\dotsc,d_{n - 1}$
+    is $\displaystyle \frac{(n - 2)!}{(d_0 - 1)! \dotsc (d_{n - 1} - 1)!}$
+\end{itemize}

@@ -1,0 +1,13 @@
+Given a set $G$ of functions on a set $X$ satisfying:
+\begin{itemize}
+    \item $\forall g \in G$, $g(x)$ is a bijection $X \to X$.
+    \item For $g_1, g_2 \in G$, then $g_1 \circ g_2$ (shorthand $g_1 g_2$) $\in G$.
+    \item $\exists e \in G$ s/t $e(x) = x \quad \forall x \in X$.
+\end{itemize}
+Then, no. of equivalence classes on $G$ is: 
+$\displaystyle 
+|X / R| = \frac{1}{|G|}\sum _{{g\in G}}|X^{g}|$ where $X^{g} = \{ x \in X: g(x) = x \}.$
+
+If $f(n)$ counts ``configurations'' (of some sort) of length $n$, we can ignore rotational symmetry using $G$ as the set of all cyclic shifts:
+Ans = $\displaystyle 
+\frac 1 n \sum_{k=0}^{n-1}{f(\text{gcd}(n, k))} = \frac 1 n \sum_{k|n}{f(k)\phi(n/k)}.$

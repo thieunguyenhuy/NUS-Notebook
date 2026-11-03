@@ -1,0 +1,9 @@
+Denote $E(n, k)$ as no. of permutations $p_1,\dotsc,p_n$ s/t exactly $k$ 
+positions $i$ satisfies $i \geq 2, p_i > p_{i - 1}$. Formulas below:
+\begin{itemize}
+    \item Base cases: $E(n, 0) = E(n, n - 1) = 1$
+    
+    \item $E(n, k) = (n - k)E(n - 1,k - 1) + (k + 1)E(n - 1,k)$
+    
+    \item $\displaystyle E(n, k) = \sum_{j = 0}^k (-1)^j\binom{n + 1}{j}(k + 1 - j)^n$
+\end{itemize}

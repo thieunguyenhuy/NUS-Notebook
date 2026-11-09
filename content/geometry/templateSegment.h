@@ -1,15 +1,15 @@
 /**
  * Author: Le Pham Duy Khoa
- * Description: Segment algorithms.
- */
-#pragma once
+ * Description: Common segment functions. Each segment is represented by
+ * a pair of points. Works for geo\_T = ll except for seg\_intersect
+ */ 
 #include "TemplatePoint.h"
 #include "TemplateLine.h"
-//works for geo_T = ll;
+//check whether p is on segment s
 bool on_seg(pt p, pair<pt, pt> s){
   return cross(p - s.fi, s.se - s.fi) == 0 && dot(p - s.fi, p - s.se) <= 0;
 }
-//works for geo_T = ll;
+//returns shortest distance from p to a point in s
 double seg_dist(pt p, pair<pt, pt> s) {
   pt v = s.se - s.fi;
   auto cmpProj = [&](pt &a, pt &b){ return dot(v, a) <= dot(v, b);};

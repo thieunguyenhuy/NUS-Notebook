@@ -1,8 +1,8 @@
 /**
  * Author: Le Pham Duy Khoa
- * Description: Circle geometry algorithms.
+ * Description: Common circle geometry functions.
+ * Requires geo\_T=double.
  */
-#pragma once
 #include "TemplatePoint.h"
 #include "TemplateLine.h"
 vector<pt> circle_circle_inter(pt o1, double r1, pt o2, double r2){
@@ -29,18 +29,9 @@ vector<pt> circle_line_inter(pt o, double r, line l){
   }
   return ans;
 }
-/**
- * Author: Victor Lecomte, chilli
- * Date: 2019-10-31
- * License: CC0
- * Source: https://vlecomte.github.io/cp-geo.pdf
- * Description: Finds the external tangents of two circles, or internal if r2 < 0 (radius |r2| in this case).
- * Can return 0, 1, or 2 tangents -- 0 if one circle contains the other (or overlaps it, in the internal case, or if the circles are the same);
- * 1 if the circles are tangent to each other (in which case .first = .second and the tangent line is perpendicular to the line between the centers).
- * .first and .second give the tangency points at circle 1 and 2 respectively.
- * To find the tangents of a circle with a point set r2 to 0.
- * Status: tested
- */
+//if r2 > 0, gets the outer tangents of circle (o1, r1) and (o2, r2).
+//if r2 < 0, gets the inner tangent of circle (o1, r1) and (o2, -r2)
+//set r2 = 0 to get tangents through a point.
 vector<pair<pt, pt>> tangents(pt o1, double r1, pt o2, double r2) {
   double dr = r1 - r2, d_sq = sq_len(o2 - o1);
   double h_sq = d_sq - dr * dr;
@@ -53,12 +44,7 @@ vector<pair<pt, pt>> tangents(pt o1, double r1, pt o2, double r2) {
   if (h_sq == 0) ans.pop_back();
   return ans;
 }
-/**
- * Author: Le Pham Duy Khoa
- * Source: cp-geo
- * Description: Find the center of the circle that goes through 3 points A, B, C.
- * Status: tested
- */
+//finds the center of the circle going through points a, b, c.
 pt circumCenter(pt a, pt b, pt c) {
   b = b-a, c = c-a; assert(cross(b,c) != 0); //assume points not collinear.
   return a + perp(b * sq_len(c) - c * sq_len(b)) / (cross(b, c) * 2);

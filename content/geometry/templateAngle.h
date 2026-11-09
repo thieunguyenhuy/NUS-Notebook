@@ -1,4 +1,3 @@
-//FILE: Angle.h
 /**
  * Author: Simon Lindholm
  * Date: 2015-01-31
@@ -9,9 +8,8 @@
  * Note that points are ordered in counterclockwise order.
  * Works with geo\_T = ll;
  */
-//assumes x^2 + y^2 > 0
-#pragma once
 #include "TemplatePoint.h"
+//assumes x^2 + y^2 > 0
 struct angle{
   pt p; int t;
   angle(pt p, int t=0): p(p), t(t) {}
@@ -24,23 +22,4 @@ struct angle{
 bool operator<(angle a, angle b){
   return make_tuple(a.t, a.half(), 0) < 
     make_tuple(b.t, b.half(), cross(a.p, b.p));
-}
-//EOF File: Angle.h
-//Find smallest angle between a.p and b.p
-pair<angle, angle> segment_angle(pt p, pt q){
-  angle a = angle(p), b = angle(q);
-  if(b < a) swap(a, b);
-  if(b < a.turn_180()) return {a, b};
-  else return {b, a.turn_360()};
-}
-//add angle a and vector v. Ensures that the new angle 
-//is in [a - 180, a + 180]
-angle add_angle(angle a, pt v) {
-  angle r(a.p + v, a.t);
-  if (a.turn_180() < r) r.t--;
-  return r.turn_180() < a ? r.turn_360() : r;
-}
-angle angle_diff(angle a, angle b){ // angle a - angle b
-  int tu = a.t - b.t; b.t = a.t;
-  return angle(dot(b.p, a.p), cross(b.p, a.p), tu - (a < b));
 }

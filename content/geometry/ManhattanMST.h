@@ -3,7 +3,7 @@
  * Source: https://cp-algorithms.com/geometry/manhattan-distance.html
  * Description: Given N points, returns up to 4*N edges, which are guaranteed
  * to contain a minimum spanning tree for the graph with edge weights w(p, q) =
- * |p.x - q.x| + |p.y - q.y|. Edges are returned in pair of indices.
+ * $|p.x - q.x| + |p.y - q.y|$. Edges are returned in pair of indices.
  * Time: $O(N \log N)$
  * Status: Tested on Library Checker
  */

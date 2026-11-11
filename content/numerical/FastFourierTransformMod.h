@@ -1,33 +1,32 @@
 /**
  * Author: Thieu Nguyen Huy
- * Description: FFT to multiply two polynomials.
- * Usage: Set MOD. Rounded convolution coefficients must fit in a signed 64-bit integer.
- * Time: O(N \log N) where N is the total sizes of two polynomials
+ * Description: Multiplies integer polynomials with a long-double FFT, then reduces modulo MOD.
+ * Usage: Set MOD. Unreduced coefficients must fit in ll, and FFT error must be below 0.5.
+ * Precision depends on coefficient magnitudes, input lengths, and long-double precision.
+ * For large modular coefficients, use NTT/CRT or coefficient splitting.
+ * Time: O(N \log N), where N is the sum of the input sizes
  * Status: Well-tested
  */
+#pragma once
 namespace FFT {
   using ld = long double;
   const int MOD = 1000000007; // Set to the required modulus.
-  const ld pi = atan2(1, 1) * 4;
+  const ld pi = acosl(-1.0L);
   struct cmplx {
     ld a, b;
-    cmplx() {
-      a = 0, b = 0;
-    }
-    cmplx(ld a1, ld b1) {
-      a = a1, b = b1;
-    }
+    cmplx(ld a1 = 0, ld b1 = 0) : a(a1), b(b1) {}
   };
-  inline cmplx sum(cmplx& c1, cmplx& c2) {
+  inline cmplx sum(const cmplx &c1, const cmplx &c2) {
     return {c1.a + c2.a, c1.b + c2.b};
   }
-  inline cmplx sub(cmplx& c1, cmplx& c2) {
+  inline cmplx sub(const cmplx &c1, const cmplx &c2) {
     return {c1.a - c2.a, c1.b - c2.b};
   }
-  inline cmplx mult(cmplx& c1, cmplx& c2) {
+  inline cmplx mult(const cmplx &c1, const cmplx &c2) {
     return {c1.a * c2.a - c1.b * c2.b, c1.a * c2.b + c1.b * c2.a};
   }
   void fft(vector<cmplx> &a, int n) {
+    assert(n > 0 && n <= (int)a.size() && (n & (n - 1)) == 0);
     for (int i = 1, j = 0; i < n; ++i) {
       int bit = n >> 1;
       for (; j >= bit; bit >>= 1) j -= bit;
@@ -48,16 +47,14 @@ namespace FFT {
       }
     }
   }
-  vector<int> multiply(vector<int> &s, vector<int> &t) {
+  vector<int> multiply(const vector<int> &s, const vector<int> &t) {
     if (s.empty() || t.empty()) return {};
-    int need = (int) s.size() + t.size() - 1, sz = 1;
+    int need = (int)s.size() + (int)t.size() - 1, sz = 1;
     while (sz < need) sz <<= 1;
     vector<cmplx> a(sz), b(sz);
     for (int i = 0; i < sz; ++i) {
-      if(i < (int)s.size()) a[i] = cmplx(s[i], 0);
-      else a[i] = cmplx(0, 0);
-      if(i < (int)t.size()) b[i] = cmplx(t[i], 0);
-      else b[i] = cmplx(0, 0);
+      if (i < (int)s.size()) a[i] = cmplx(s[i], 0);
+      if (i < (int)t.size()) b[i] = cmplx(t[i], 0);
     }
     fft(a, sz);
     fft(b, sz);
@@ -71,6 +68,6 @@ namespace FFT {
     return ans;
   }
 }
-vector<int> operator * (vector<int> &s, vector<int> &t) {
+vector<int> operator*(const vector<int> &s, const vector<int> &t) {
   return FFT::multiply(s, t);
 }

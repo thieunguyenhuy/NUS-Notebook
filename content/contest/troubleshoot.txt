@@ -1,1 +1,4 @@
 Set and multiset
+Wrong array definition when translating from paper
+Overflow (ull, int, ll). Especially ull.
+Add -Wconversion, -Wsign-conversion to detect implicit conversion

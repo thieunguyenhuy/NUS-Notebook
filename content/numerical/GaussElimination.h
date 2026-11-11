@@ -1,17 +1,21 @@
 /**
  * Author: Thieu Nguyen Huy
- * Description: Gauss elimation to solve system of linear equations
- * Usage: variables are numbered 0 -> m-1, the m-th column is the right hand side
+ * Description: Gaussian elimination for a real system of linear equations.
+ * Destroys a. Returns 0 if inconsistent, 1 if unique, 2 if infinitely many solutions.
+ * ans contains one solution when consistent; free variables are set to zero.
+ * Usage: Variables are numbered 0 to m-1; column m is the right-hand side.
+ * For no equations, size ans to the number of variables before calling.
  * Time: O(min(N, M) \cdot N \cdot M) where N = equations, M = variables
  * Status: Tested on VNOI
  */
+#pragma once
 int gauss(vector<vector<double>> &a, vector<double> &ans) {
   const double EPS = 1e-9;
-  int n = a.size(), m = a[0].size() - 1;
+  int n = (int)a.size(), m = n ? (int)a[0].size() - 1 : (int)ans.size();
   vector<int> where(m, -1);
   for (int col = 0, row = 0; col < m && row < n; ++col) {
     int p = row;
-    for (int i = row; i < n; ++i) 
+    for (int i = row; i < n; ++i)
       if (abs(a[i][col]) > abs(a[p][col])) p = i;
     if (abs(a[p][col]) < EPS) continue;
     swap(a[row], a[p]);
@@ -32,7 +36,7 @@ int gauss(vector<vector<double>> &a, vector<double> &ans) {
     for (int j = 0; j < m; ++j) sum += ans[j] * a[i][j];
     if (abs(sum - a[i][m]) > EPS) return 0;
   }
-  for (int i = 0; i < m; ++i) 
+  for (int i = 0; i < m; ++i)
     if (where[i] == -1) return 2;
   return 1;
 }
